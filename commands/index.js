@@ -38,7 +38,10 @@ async function parse(message) {
 
     if (!command) return;
     if (command.authreq && !hasAuth(message, command.authreq)) {
-        return message.channel.send('no sjw shit but check yo privileges la bruh');
+        return message.channel.send(Config.reponses.needPerm);
+    } 
+    if (command.channels && command.channels.indexOf(message.channel.name) === -1) {
+        return message.channel.send(Config.reponses.wrongChannel);
     }
     if (command.guildOnly && message.channel.type !== 'text') {
         return message.reply('I can\'t execute that command inside DMs!');

@@ -2,17 +2,19 @@
 function validateBet (amount, message) {
 	let channel = message.channel;
 	if (!amount || amount === 0) {
-		return channel.send('put up sum money den lil nicc');
+		return channel.send(Config.reponses.noAnte);
 	}
-
+	if(amount < 0) {
+		return channel.send(Confi.negAnte);
+	} 
 	if (isNaN(amount)) {
-		return channel.send('ets not a number la bruh go back to 1st grade:joy:');
+		return channel.send(Config.reponses.NaN);
 	}
 	if (!Number.isInteger(amount)) {
-		return channel.send('we not betting cents out here la bruh fuck does this look like');
+		return channel.send(Config.reponses.notInteger);
 	}
 	if (amount > Economy.getBalance(message.author.id)) {
-		return channel.send('you cant afford that broke ass nigga:joy:');
+		return channel.send(Config.reponses.notEnoughMoney);
 	}
 	else {
 		return true;

@@ -2,7 +2,7 @@
 
 module.exports = {
 atm: {
-    aliases: ['gold', 'shekels', 'monies', 'balance', 'pounds', 'coins', 'purse', 'fannypack'],
+    aliases: ['gold', 'shekels', 'monies', 'balance', 'pounds', 'coins', 'purse', 'fannypack', 'bal'],
     execute: function (message, args) {
    const target = message.mentions.users.first() || message.author;
    const notacurrency = ['balance', 'atm', 'purse', 'fannypack'];
@@ -57,6 +57,23 @@ atm: {
         Economy.giveMoney(transferTarget.id, transferAmount);
 
         return message.channel.send(`Successfully added money into the economy`);
+    } 
+    },
+    takemoney: {
+        aliases: ['transferbucks', 'transfermoney', 'give', 'givemoney', 'givebucks'],
+		execute: function(message, args) {
+        if(message.author.id !== '186905302245965824') return message.channel.send('only bandi can do tht check yo privileges la bruh');
+        const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
+        const transferTarget = message.mentions.users.first();
+        if (!transferTarget) return message.channel.send('Please @ the person you would like to send the money to');
+        if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
+        if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
+        if(!Economy.economy[transferTarget.id]) {
+            Economy.economy[transferTarget.id] = new Economy.Member(transferTarget.id);
+        }
+        Economy.takeMoney(transferTarget.id, transferAmount);
+
+        return message.channel.send(`Successfully taken money out of the economy`);
     } 
     },
 	buy: { 

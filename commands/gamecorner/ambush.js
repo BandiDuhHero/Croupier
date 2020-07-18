@@ -158,9 +158,9 @@ module.exports = {
         cooldown: 1,
         execute(message, args) {
             const game = message.channel.game;
-            if (!game || game.status === 0) return message.channel.send('there is no ambush game goin on cuz')
+            if (!game || game.status === 0) return message.channel.send(Config.reponses.noGame)
             if (game.status !== 3) {
-				message.channel.send('its not time to shoot yet la bruh');
+				//message.channel.send('its not time to shoot yet la bruh');
 				return message.react('🚫');
 			}
             if (Object.keys(game.players).indexOf(message.author.id) === -1) {
@@ -173,7 +173,7 @@ module.exports = {
 				return message.react('🚫');
 			}
             const target = message.mentions.users.first();
-            if (!target) return message.channel.send('u gotta @ them bro');
+            if (!target) return message.channel.send(Config.responses.noMention);
             if (!game.players[target.id] || game.players[target.id].immunity === true) {
 				return message.react('🚫');
 			}

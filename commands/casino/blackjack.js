@@ -45,10 +45,10 @@ const suits = ['♠', '♥', '♦', '♣'];
 const cardnums = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 class Blackjack {
     constructor(ante, channel) {
+        this.autostart = false;
         this.ante = ante;
         this.channel = channel;
 		this.status = 1;
-		this.joinable = true;
 		this.deck = [];
         this.newDeck();
         this.winners = [];
@@ -172,9 +172,24 @@ class Blackjack {
         this.status = 0;
         payoutmsg += '\n winners: ' + this.winners.join(', ');
         //if(this.winners.length === 0) payoutmsg = 'there we';
-        return this.channel.send({
+        
+        this.channel.send({
             embed: embeds.winners(payoutmsg)
         });
+        if(this.autostart === true) {
+            setTimeout(() => {
+                if(this.status === 0) {
+                    this.deck = [];
+                    this.newDeck();
+                    this.winners = [];
+                    this.players = {};
+                    message.channel.send({
+                        embed: embeds.open(this.ante),
+                    });
+        }
+            }, 25000);
+            
+        }
 	}
 }
 module.exports = {

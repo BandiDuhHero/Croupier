@@ -53,14 +53,22 @@ const dozens = [
 const rednums = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 const blacknums = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
 class Roulette {
-    constructor() {
-        this.status = 0;
+    constructor(channel) {
+        this.channel = channel;
+        this.autostart = false;
+        this.status = 1;
         this.bets = {};
         this.num = Math.floor(Math.random() * 37);
     }
     spin() {
         let winners = [];
         let bets = this.bets;
+        this.nummulti = 35;
+        this.columnmulti = 3;
+        this.dozenmulti = 3;
+        this.colormulti = 2;
+        this.hlmulti = 2;
+        this.eomulti = 2;
         rednums.forEach(i => {
             if (i === this.num) this.color = 'red';
 		});
@@ -68,74 +76,74 @@ class Roulette {
             if (i === this.num) this.color = 'black';
 		});
         dozens.forEach(i => {
-            if (i.indexOf(this.num) !== -1) this.dozen = dozens.indexOf(i);
+            if (i.indexOf(this.num) !== -1) this.dozen = 'd' + (dozens.indexOf(i) + 1);
 		});
         columns.forEach(i => {
-            if (i.indexOf(this.num) !== -1) this.column = columns.indexOf(i);
+            if (i.indexOf(this.num) !== -1) this.column = 'c' + (columns.indexOf(i) + 1);
         });
-        console.log('color is ' + this.color + '\ndozen is ' + this.dozen + '\ncolumn is ' + this.column);
+        //console.log('color is ' + this.color + '\ndozen is ' + this.dozen + '\ncolumn is ' + this.column);
         if(this.num % 2 === 0) this.eo = 'even';
         if(this.num % 2 !== 0) this.eo = 'odd';
         if(this.num > 18) this.hl = 'high';
         if(this.num <= 18) this.hl = 'low';
-        Object.keys(bets).forEach(i => {
-            if (this.num === 0) {
-                if (bets[i].num === this.num) {
-                   return Economy.giveMoney(bets[i].id, bets[i].numamt * 35);
-                }
-            }
-            if (bets[i].num === this.num) {
-                Economy.giveMoney(i, bets[i].numamt * 35);
-            }
-            if (bets[i].column === this.column) {
-                Economy.giveMoney(i, bets[i].columnamt * 3);
-            }
-            if (bets[i].dozen === this.dozen) {
-                Economy.giveMoney(i, bets[i].dozenamt * 3);
-            }
-            if (bets[i].color === this.color) {
-				Economy.giveMoney(i, bets[i].coloramt * 2);
-            }
-            if (bets[i].hl === this.hl) {
-				Economy.giveMoney(i, bets[i].hlamt * 2);
-            }
-            if (bets[i].eo === this.eo) {
-                Economy.giveMoney(i, bets[i].eoamt * 2);
-            }
+
+        Object.keys(bets).forEach(i => { //i=each person
+            Object.keys(bets[i]).forEach(u => { //u=each persons bet
+                Object.keys(this).forEach(c => { //c = each category
+                    if(u === this[c]) {
+                        Economy.giveMoney(i, bets[i][u]*this[c + 'multi']);
+                    }
+                });
+            });     
         });
         this.msg = 'the roulette has been spun........ it landed on........' + this.num + '!';
         this.status = 0;
-    }
+        if(this.autostart === true) {
+            setTimeout(() => {
+                if(this.status === 0) {
+                this.status = 1;
+                this.bets = {};
+                this.num = Math.floor(Math.random() * 37);
+                this.channel.send({
+                embed: embeds.startRoulette()
+            });
+        }
+            }, 25000);
+            
+        }
+}
     end(ender) {
-            const timeElapsed = this.startTime - Date.now();
-            this.channel.roulCanvas.edit({
+            this.channel.send({
                 embed: embeds.endRoulette(ender.username)
             });
-			this.status = 0;
-			Object.keys(this.bets).forEach(i => {
-				let bet = this.bets[i];
-			Object.keys(bet).forEach(key => {
-                if (key.charAt(key.length - 3) === 'a') Economy.giveMoney(i, bet[key]);
-			});
-		});
+            this.status = 0;
+            let bets = this.bets;
+            if(Object.keys(bets).length > 0) {
+            Object.keys(bets).forEach(i => { //i=each person
+                Object.keys(bets[i]).forEach(u => { //u=each persons bet
+                    console.log(i);
+                    console.log(bets[i][u]);
+                            Economy.giveMoney(i, bets[i][u]);
+
+                });     
+            });
+        }
         }
 };
 
 module.exports = {
     roulette: {
         authreq: 'Dealer',
+        channels: ['roulette'], 
         aliases: ['roul'],
         description: 'opens the roulette table for betting, use .roulettetutorial for more info',
         cooldown: 5,
         execute: (message, args) => {
             const roul = message.channel.roul;
             if (roul && roul.status !== 0) {
-                return message.channel.send('one game at a time g');
+                return message.channel.send(Config.reponses.gameStarted);
             }
-            if(message.channel.name !== 'roulette') {
-                return message.channel.send('u trippin this ain even the roulette room :skull:');
-            }
-            message.channel.game = new Roulette();
+            message.channel.game = new Roulette(message.channel);
             let roulCanvas = message.channel.send({
                 embed: embeds.startRoulette()
             });
@@ -143,75 +151,71 @@ module.exports = {
         },
     },
     roulettebet: {
+        channels: ['roulette'], 
         aliases: ['rbet', 'roulbet'],
         description: 'places a bet on the roulette, use .roulettetutorial if you are confused',
         usage: '<option> <amount>',
         cooldown: 3,
         execute: (message, args) => {
             const game = message.channel.game;
-            const amount = Number(args[1]);
+            const ante = Number(args[1]);
 			let bettingon = args[0];
 			let bettingnum = Number(bettingon);
-            const betoptions = ['eo', 'number', 'num', 'dozen', 'column', 'col', 'color'];
+            const betoptions = ['red', 'black', 'high', 'low', 'even,', 'odd',
+             'numbers 1-36', 'c1', 'c2', 'c3', 'd1', 'd2', 'd3'];
             if (!game || game.status === 0) {
-                return message.channel.send('mans tryna bet in the air the roulette table aint even out la bruh');
+                return message.channel.send(Config.reponses.noGame);
             }
-            if(Casino.validateBet(amount, message) !== true) return;
+            if(Casino.validateBet(ante, message) !== true) return;
 			if (!game.bets[message.author.id]) game.bets[message.author.id] = {};
-			let bet = game.bets[message.author.id];
-            if (bettingon === 'odd' || bettingon === 'even') {
-                if (bet.eo) Economy.giveMoney(message.author.id, bet.eoamt);
-                bet.eo = bettingon;
-                bet.eoamt = amount;
-            } else if (bettingon === 'red' || bettingon === 'black') {
-                if (bet.color) Economy.giveMoney(message.author.id, bet.coloramt);
-                bet.color = bettingon;
-                bet.coloramt = amount;
-            }  else if (bettingon === 'high' || bettingon === 'low') {
-                if (bet.hl) Economy.giveMoney(message.author.id, bet.coloramt);
-                bet.hl = bettingon;
-                bet.hlamt = amount;
-            } else if (bettingon.charAt(0) === 'c') {
-                let c = Number(bettingon.charAt(1));
-                if (c <= 3 && c > 0) {
-                    if (bet.column) Economy.giveMoney(message.author.id, bet.columnamt);
-                    bet.column = columns[c - 1];
-                    bet.columnamt = amount;
-                } else return message.channel.send('that is not a column(1, 2 or 3)');
-            } else if (bettingon.charAt(0) === 'd') {
-                let d = Number(bettingon.charAt(1));
-                if (d <= 3 && d > 0) {
-                    if (bet.dozen) Economy.giveMoney(message.author.id, bet.dozenamt);
-                    bet.dozen = dozens[d - 1];
-                    bet.dozenamt = amount;
-                } else return message.channel.send('that is not a dozen(1, 2 or 3)');
-			} else if (!isNaN(bettingnum)) {
-                if (bettingnum <= 36 && bettingnum >= 0 && Number.isInteger(bettingnum)) {
-					if (bet.num) Economy.giveMoney(message.author.id, bet.numamt);
-                    bet.num = bettingnum;
-                    bet.numamt = amount;
-                } else return message.channel.send('that is not an integer in between 0 and 36');
-            } else return message.channel.send('mans betting on stuff that doesnt exist');
-
-			let fullbetMsg = '';
+            let bet = game.bets[message.author.id];
+            if (!isNaN(bettingnum)) {
+                if (bettingnum >= 36 || bettingnum <= 0 || !Number.isInteger(bettingnum)) {
+                    return message.channel.send('that is not an integer in between 0 and 36');     
+                }  
+            }
+            if (betoptions.indexOf(bettingon) === -1 && isNaN(bettingnum)) {
+                return message.channel.send('That is not a category you can bet on.');
+            }  else {
+                 if(bet[bettingon]) {
+                    Economy.giveMoney(message.author.id, bet[bettingon]);
+                 }
+                bet[bettingon] = bettingnum;
+                bet[bettingon] = ante;
+            }
+			
+            Economy.takeMoney(message.author.id, ante);
+            message.react('🤑');
+            //message.channel.send('heres your full bet: ' + fullbetMsg);
+        },
+    },
+    myroulettebet: {
+        channels: ['roulette'],
+        aliases: ['myroulbet', 'myrbet'],
+        execute(message) {
+        let bet = message.channel.game.bets[message.author.id];
+        if(!bet) {
+            message.channel.send('You haven\'t placed a bet');
+        }
+        let fullbetMsg = '`Your Roulette Bet\n' +
+        '-------------------\n';
             Object.keys(bet).forEach(key => {
                 if (key.charAt(key.length - 3) !== 'a') {
-					fullbetMsg += bet[key] + ': ' + bet[key+'amt'] + ' ';
+					fullbetMsg += key + ': ' + bet[key] + '💰\n';
                 }
             });
-            Economy.giveMoney(message.author.id, -amount);
-            message.channel.send('heres your full bet: ' + fullbetMsg);
-        }
+        message.channel.send(fullbetMsg + '`');    
+        },
     },
     roulettespin: {
         aliases: ['rspin', 'roulspin'],
         cooldown: 10,
-        execute: (message, args) => {
+        execute: async function (message, args) {
             const game = message.channel.game;
             if (!game || !game.status === 0) {
-                return message.channel.send('how you gon spin a wheel tht doesnt exist l0l');
+                return message.channel.send(Config.reponses.gameStarted);
             }
-            game.spin();
+            await game.spin();
             let roulCanvas = message.channel.send({
                 embed: embeds.spinRoulette(game.msg)
             });
@@ -220,8 +224,3 @@ module.exports = {
         }
     },
 };
-/*<div class="content: " ";="" display:="" table;="" clear:="" both;"="">
-  <div style="float:left; width: 50%;">
-<p>twitter:&nbsp;<a href="https://twitter.com/revmak"></a><a href="https://twitter.com/revmak">@revmak</a><br><br>instagram:&nbsp;<a href="https://instagram.com/makbandele">@makbandele</a><br><br>facebook:&nbsp;<a href="https://facebook.com/makbandele">makalani bandele</a></p></div>
-  <div style="float: left; width: 50%;">Book makalani as a speaker, reader, or workshop facilitator through his contact form. Inquiries on publications, writings, and poems are welcome and appreciated. In keeping with his busy schedule, allow a reasonable time for response.</div>
-</div>*/

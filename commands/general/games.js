@@ -7,27 +7,27 @@ module.exports = {
 		execute: (message) => {
 			const game = message.channel.game;
 			if (!game|| game.status === 0) {
-				return message.channel.send('do u see a game to join dumb bitch??? what i thot');
+				return message.channel.send(Config.reponses.noGame);
 			}
 			if (!game.join) {
 				return message.channel.send('it aint as simple as .j la bruh u gotta learn how to play the game u feel me check out .help ' + game.name);
 			}
 			else if (game.status !== 1) {
-				return message.channel.send('the game already started wait for another one');
+				return message.channel.send(Config.reponses.gameStarted);
 			}
 			else if (game.players && Object.keys(game.players).indexOf(message.author.id) !== -1) {
-				return message.channel.send('ur already in the game la bruh :joy:');
+				return message.channel.send(Config.reponses.inGame);
 			}
 			if(game.ante) {
 				if (game.ante > Economy.getBalance(message.author.id)) {
-					return message.channel.send('you cant afford that broke ass nigga:joy:');
+					return message.channel.send(Config.reponses.notEnoughMoney);
 				}
 		}
 			game.join(message.author);
 			message.react('🤑');
 		},
 	},
-		leave: {
+		/*leave: {
 			aliases: ['l'],
 			cooldown: 30,
 			execute: (message) => {
@@ -44,16 +44,18 @@ module.exports = {
 				game.leave(message.author);
 				message.channel.send(message.author.tag + ' has left ' + game.name);
 			},
-	},
-	/*players: {
+	},*/
+	players: {
 		cooldown: 20,
 		execute: (message) => {
 			if (!game|| game.status === 0) {
-				return message.channel.send('there ain even a active game idk wat u smokin on cuz :joy:');
+				return message.channel.send(Config.reponses.noGame);
 			}
-			message.channel.send(message.author.tag + ' has left ' + game.name);
+			if(game.players) message.channel.send('`Players: ' + Object.keys(game.players) + '`');
+			else message.channel.send('This game doesn\'t have a players command');
+			
 		}
-	},*/
+	},
 	start: {
 		authreq: 'Operator',
 		cooldown: 10,

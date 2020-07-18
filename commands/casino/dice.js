@@ -83,6 +83,7 @@ class Dice {
 
 module.exports = {
     dice: {
+        channels: ['dice-1', 'dice-2', 'dice-3'],
         aliases: ['sd'],
         description: 'starts a dice game',
         usage: '[amount]',
@@ -90,11 +91,8 @@ module.exports = {
         execute:  (message, args) => {
             const ante = Number(args);
             const game = message.channel.game;
-            if(message.channel.name !== ('dice-1' || 'dice-2' || 'dice-3')) {
-                return message.channel.send('u trippin this ain even the dice room :skull:');
-            }
             if (game && game.status === 1) {
-                return message.channel.send('one game at a time g');
+                return message.channel.send(Config.reponses.gameStarted);
             }
             if(Casino.validateBet(ante, message) !== true) return; 
             message.channel.game = new Dice(ante, message.author, message.channel);
