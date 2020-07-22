@@ -1,9 +1,10 @@
 
 const dev = require('./dev');
 const help = require('./help');
-const money = require('./money');
+const econ = require('./economy');
 const games = require('./games');
-const commands = Object.assign(money, help, dev, games);
+const config = require('./config');
+const commands = Object.assign(econ, help, dev, games, config);
 module.exports = {
     cooldowns: new Discord.Collection(),
 	commands: commands,

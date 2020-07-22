@@ -1,13 +1,13 @@
 let economy = {};
-let shop = {
-  customrole: ['Custom Role', 1000, 'custom role with any name and color you choose'],
-  cookie: ['Cookie', 10, 'A digital cookie that can be eaten, given to someone or kept(expires after 20 minutes)'],
-};
+/* 
+restart economy
+const list = client.guilds.get("651547995141177355"); list.members.forEach(member => Economy.economy[member.user.id] = new Economy.Member(member.user.id))
+*/
 class Member {
   constructor(userid) {
     this.userid = userid;
     this.money = 0;
-    this.items = [];
+    this.inventory = {};
   }
 };
 
@@ -17,9 +17,15 @@ function takeMoney(userid, amount) {
 function giveMoney(userid, amount) {
   Economy.economy[userid].money += amount;
 }
-
 function getBalance(userid) {
   return Economy.economy[userid].money;
+}
+function getInventory(userid) {
+  return Economy.economy[userid].inventory;
+}
+function hasItem(userid, item) {
+  if (Economy.inventory[item]) return true;
+  return false;
 }
 
 let MongoClient = require('mongodb').MongoClient;
@@ -63,11 +69,15 @@ async function save() {
 }
 exports.economy = economy;
 
-exports.shop = shop;
+exports.Shop = require('./shop');
 
 exports.Member = Member;
 
 exports.getBalance = getBalance;
+
+exports.getInventory = getInventory;
+
+exports.hasItem = hasItem;
 
 exports.takeMoney = takeMoney;
 

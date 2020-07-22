@@ -16,6 +16,7 @@
     "mongodb": "^3.5.2",
     "sequelize": "^5.21.3",
     "sqlite": "^3.0.3",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "uniqid": "^5.2.0"
   }
 }

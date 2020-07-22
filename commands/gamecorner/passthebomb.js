@@ -17,7 +17,7 @@ const embeds = {
                 value: 'use ".help gamecorner" for more information',
             }, ],
             image: {
-                url: 'https://media.giphy.com/media/g2YdApKEna2sg/giphy.gif',
+                url: Config.images.passthebomb,
             },
         };
 	},
@@ -30,7 +30,7 @@ const embeds = {
 			description: msg,
 	
             image: {
-                url: 'https://media.giphy.com/media/g2YdApKEna2sg/giphy.gif',
+                url: Config.images.passthebomb,
             },
         };
 	},
@@ -51,7 +51,7 @@ const embeds = {
 			},
 		],
             image: {
-                url: 'https://media.giphy.com/media/g2YdApKEna2sg/giphy.gif',
+                url: Config.images.passthebomb,
             },
         };
 	},
@@ -62,7 +62,7 @@ const embeds = {
             title: 'Pass The Bomb!',
             description: 'the game has been ended :',
             image: {
-                url: 'https://media.giphy.com/media/g2YdApKEna2sg/giphy.gif',
+                url: Config.images.passthebomb,
             },
         };
     },
@@ -93,13 +93,9 @@ class PTB  {
 		this.status = 2; //inactive bomb
 		this.newRound();
 	}
-	wait() {
-		this.status = 2;
-		this.timer = setTimeout(this.newRound.bind(this), this.waitTime);
-	};
 	newRound() {
 		this.clearTimers();
-
+		this.status = 2;
 		let pIds = Object.keys(this.players);
 		if (pIds.length < 2) return this.showWinner();
 		let playersLeft = [];
@@ -107,44 +103,66 @@ class PTB  {
 			playersLeft.push(this.players[p].name);
 		});
 		this.channel.send('NEW ROUND!!! Players Left: ' + playersLeft.toString());
-		setTimeout(() => {
+		this.timer1 = setTimeout(() => {
+			this.round();
+		}, 5000);
+	};
+	round() {
+		let pIds = Object.keys(this.players);
+		if (pIds.length < 2) return this.showWinner();
 		this.playerWithBomb = pIds[Math.floor(Math.random() * pIds.length)];
 		this.status = 3; //active bomb
 		this.channel.send('The bomb is handed to ' + this.players[this.playerWithBomb].name);
-		this.timer = setTimeout(this.bomb.bind(this), Math.floor(Math.random() * 8000) + 16000);
-		}, 2000);
+		// make it hard to predict when it will blow
+		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
+		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)] + 10000;
+		this.timer2 = setTimeout(() => {
+			this.bomb();
+		}, delay);
 	};
-	bomb() {
+	async bomb() {
 		this.clearTimers();
 		const attachment = new Discord.Attachment('./img/bomb.gif', 'bomb.gif');
-		console.log(this.playerWithBomb);
-		this.channel.send(this.players[this.playerWithBomb].name + ' dropped the bomb and is eliminated', attachment);
+		await this.channel.send(this.players[this.playerWithBomb].name + ' dropped the bomb and is eliminated', attachment);
 		delete this.players[this.playerWithBomb];
-		this.status = 2;
-		this.timer = setTimeout(this.newRound.bind(this), this.waitTime);
+		this.timer3 = setTimeout(() => {
+			this.newRound();
+		}, 3000);
+		
 	};
-	showWinner() {
+	async showWinner() {
 		this.clearTimers();
 		this.status = 0;
+		setTimeout( async() => {
+		
 		for(var i in this.players) {
-		this.channel.send(({
+		await this.channel.send(({
 			embed: embeds.winner(this.players[i].name, this.reward),
 		}));
 	}
+}, 2000);
 	}
 	end() {
-		this.clearTimers();
+		//this.clearTimers();
 		this.status = 0;
 		this.channel.send(({
 			embed: embeds.end()
 		}));
 	}
 	clearTimers() {
-		if (this.timer) {
-			clearTimeout(this.timer);
-			this.timer = null;
-		}
-	}
+        if (this.timer1) {
+            clearTimeout(this.timer1);
+            this.timer2 = null;
+        }
+        if (this.timer2) {
+            clearTimeout(this.timer2);
+            this.timer2 = null;
+        }
+        if (this.timer3) {
+            clearTimeout(this.timer3);
+            this.timer3 = null;
+        }
+    }
 };
 module.exports = {
 	passthebomb: {
@@ -152,14 +170,14 @@ module.exports = {
 		channels: ['pass-the-bomb'],
 		aliases: ['ptb'],
         cooldown: 5,
-        execute: (message, args) => {
+        execute: async (message, args) => {
             const game = message.channel.game;
     
             if(game && game.status !== 0) {
                 return message.channel.send('theres already a game in progress wait for it to finish lil nicc');
         }
 			message.channel.game = new PTB(message.channel);
-			let openPTB = message.channel.send({
+			let openPTB = await message.channel.send({
                 embed: embeds.open()
             });
 			message.channel.ptbTimeout = setTimeout(() => {

@@ -1,5 +1,4 @@
 const max_players = 10;
-
 const embeds = {
     open: function() {
         const attachment = new Discord.Attachment('./img/', 'sample.png');
@@ -17,7 +16,7 @@ const embeds = {
                 },
             ],
             image: {
-                url: 'https://media.giphy.com/media/QxYv4Y4lThPYNMnlDY/giphy.gif',
+                url: Config.images.ambush,
             },
         };
     },
@@ -37,7 +36,7 @@ const embeds = {
                 },
             ],
             image: {
-                url: 'https://media.giphy.com/media/QxYv4Y4lThPYNMnlDY/giphy.gif',
+                url: Config.images.ambush,
             },
         };
     },
@@ -48,7 +47,7 @@ const embeds = {
             title: 'Ambush!',
             description: 'the game has been ended',
             image: {
-                url: 'https://media.giphy.com/media/QxYv4Y4lThPYNMnlDY/giphy.gif',
+                url: Config.images.ambush,
             },
         };
     },
@@ -64,7 +63,7 @@ class Ambush {
         this.status = 1; //0- no game 1- signups 2- waiting for "FIRE!!!" 3- time to shoot 
         this.players = {};
         this.timer = null;
-        this.waitTime = 17000;
+        this.waitTime = 10000;
     }
     join(user) {
         this.players[user.id] = {
@@ -79,56 +78,68 @@ class Ambush {
         this.status = 2; //waiting for fire
         this.newRound();
     }
-    wait() {
-        this.status = 2;
-        this.timer = setTimeout(this.newRound.bind(this), this.waitTime);
-	};
-
-    newRound() {
+    async newRound() {
         this.clearTimers();
+        this.status = 2;
         let pIds = Object.keys(this.players);
         if (pIds.length < 2) return this.showWinner();
         let playersLeft = [];
         pIds.forEach(p => {
 			playersLeft.push(this.players[p].name);
-			this.players[p].immunity = false;
+            this.players[p].immunity = false;
+            this.players[p].cantshoot = false;
         });
-		this.channel.send('NEW ROUND!!!! Players Left: ' + playersLeft.toString());
-		setTimeout(() => {
-			this.channel.send('wait for it..........');
-		
-		
+       await this.channel.send('NEW ROUND!!!! Players Left: ' + playersLeft.join());
+        this.timer1 = setTimeout(async () => {
+            await this.channel.send('wait for it..........');
+            this.round();
+		}, 5000);	
+        
+	};
+
+    round() {
+        this.clearTimers();
 		// make it hard to predict when it will say fire
 		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
 		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)];
-        setTimeout(() => {
+        this.timer2 = setTimeout(async() => {
+            await this.channel.send('**FIRE!!!**');
             this.status = 3; //time to shoot
-            this.channel.send('**FIRE!!!**');
-            
-		}, delay);
-	}, 2000);
-		this.wait();
+            this.timer3 = setTimeout(() => { 
+                this.newRound();
+            }, 10000);
+        }, delay);
+        
+        
     };
-    showWinner() {
+    async showWinner() {
         this.clearTimers();
         this.status = 0; //0- no active game
-        for (var i in this.players) {
+        let winner = this.players[Object.keys(this.players)[0]];
             this.channel.send(({
-                embed: embeds.winner(this.players[i].name, this.reward),
+                embed: embeds.winner(winner.name, this.reward),
             }));
-        }
+            Economy.giveMoney(winner.id, this.reward);
     }
     end() {
-        this.clearTimers();
+        //this.clearTimers();
         this.status = 0; // 0- no active game
         this.channel.send(({
             embed: embeds.end()
         }));
     }
     clearTimers() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
+        if (this.timer1) {
+            clearTimeout(this.timer1);
+            this.timer2 = null;
+        }
+        if (this.timer2) {
+            clearTimeout(this.timer2);
+            this.timer2 = null;
+        }
+        if (this.timer3) {
+            clearTimeout(this.timer3);
+            this.timer3 = null;
         }
     }
 };
@@ -137,14 +148,14 @@ module.exports = {
         authreq: 'Operator',
         channels: ['ambush'],
         cooldown: 10,
-        execute: (message, args) => {
+        execute: async (message, args) => {
             const game = message.channel.game;
 
             if (game && game.status !== 0) {
-                return message.channel.send('theres already a game in progress wait for it to finish lil nicc');
+                return message.channel.send(Config.responses.gameStarted);
             }
             message.channel.game = new Ambush(message.channel);
-            let openAmbush = message.channel.send({
+            await message.channel.send({
                 embed: embeds.open()
             });
             message.channel.ambushTimeout = setTimeout(() => {
@@ -158,29 +169,34 @@ module.exports = {
         cooldown: 1,
         execute(message, args) {
             const game = message.channel.game;
-            if (!game || game.status === 0) return message.channel.send(Config.reponses.noGame)
+            if (!game || game.status === 0) return message.channel.send(Config.responses.noGame)
             if (game.status !== 3) {
-				//message.channel.send('its not time to shoot yet la bruh');
-				return message.react('🚫');
+                //message.channel.send('its not time to shoot yet la bruh');
+                if (game.status === 2) {
+                    game.players[message.author.id].cantshoot = true;
+                    message.react(Config.emotes.laugh);
+                }       
+				return message.react(Config.emotes.deny);
 			}
             if (Object.keys(game.players).indexOf(message.author.id) === -1) {
                 
 				//message.channel.send('u not in the game la bruh :joy:');
-				return message.react('🚫');
+				return message.react(Config.emotes.deny);
 			}
-			if(game.players[message.author.id].immunity === true) {
+			if(game.players[message.author.id].cantshoot === true) {
 				//message.channel.send('u already shot :joy: yo dumb ahh');
-				return message.react('🚫');
+				return message.react(Config.emotes.deny);
 			}
             const target = message.mentions.users.first();
             if (!target) return message.channel.send(Config.responses.noMention);
             if (!game.players[target.id] || game.players[target.id].immunity === true) {
-				return message.react('🚫');
+				return message.react(Config.emotes.deny);
 			}
             game.players[message.author.id].immunity = true;
+            game.players[message.author.id].cantshoot = true;
 			delete game.players[target.id];
 			//message.channel.send(message.author.username + ' sniped ' + target.username);
-			message.react('✅');
+			message.react(Config.emotes.check);
 
         }
     },

@@ -1,6 +1,11 @@
 module.exports = {
     kpopmode: {
-
+		authreq: 'Admin',
+		cooldown: 5,
+		execute(message) {
+			Config.images.ambush = 'https://media.discordapp.net/attachments/731505018225688648/734877483928911962/jinsoul_ayyyy.gif';
+			return message.react('✅');
+		},
 	},
 	ghettomode: {
 		authreq: 'Admin',

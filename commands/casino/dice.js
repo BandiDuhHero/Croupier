@@ -2,13 +2,13 @@
 let startDice = async (channel, name) => {
     const canvas = Canvas.createCanvas(1000, 350);
 	const ctx = canvas.getContext('2d');
-
+    //if(name.length > 20) name =
 	const background = await Canvas.loadImage('./img/whitebg.jpg');
 	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     ctx.lineWidth = 20;
 	ctx.strokeStyle = '#24678d';
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '36px arial';
+    ctx.font = '35px arial';
     ctx.fillStyle = '#24678d'; //navyish blue
     let text = name + ' has started a dice game for......';
     let textWidth = ctx.measureText(text +  '$' + channel.game.ante).width; 
@@ -26,6 +26,44 @@ let startDice = async (channel, name) => {
 
 	channel.send(attachment);
 }
+let joinDice = async (channel, p1, p2, r1, r2, winner) => {
+    const canvas = Canvas.createCanvas(1000, 350);
+	const ctx = canvas.getContext('2d');
+
+	const background = await Canvas.loadImage('./img/whitebg.jpg');
+	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 20;
+	ctx.strokeStyle = '#24678d';
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '33px arial';
+    ctx.fillStyle = '#24678d'; //navyish blue
+    let text1 = p1 + ' has rolled a ';
+    let text1Width = ctx.measureText(text1 + r2).width; 
+    ctx.fillText(text1, (canvas.width/2) - (text1Width/2) - 20, 125);
+    let text2 = p2 + ' has rolled a ';
+    let text2Width = ctx.measureText(text2 + r2).width; 
+    ctx.fillText(text2, (canvas.width/2) - (text2Width/2) - 20, 200);
+    //black
+    ctx.fillStyle = '#000000'; //black
+    ctx.fillText(r1, ((canvas.width/2) - (text1Width/2)) + ctx.measureText(text1).width - 15, 125);
+    ctx.fillText(r2, ((canvas.width/2) - (text2Width/2)) + ctx.measureText(text2).width - 15, 200);
+    ctx.fillStyle = '#24678d'; //navyish blue
+    let text3 = winner + ' has won ';
+    let text3Width = ctx.measureText(text3 +  '$' + channel.game.ante).width;
+    ctx.fillText(text3, (canvas.width/2) - (text3Width/2) - 20, 275); 
+    ctx.fillStyle = '#F70400'; //red
+    ctx.fillText('$' + channel.game.ante, ((canvas.width/2) - (text3Width/2)) + ctx.measureText(text3).width - 15, 275);
+    
+	const dice = await Canvas.loadImage('./img/dice.png');
+    ctx.drawImage(dice, 25, 25, 100, 100);
+    ctx.drawImage(dice, 875, 25, 100, 100);
+    ctx.drawImage(dice, 25, 225, 100, 100);
+    ctx.drawImage(dice, 875, 225, 100, 100);
+
+	const attachment = new Discord.Attachment(canvas.toBuffer(), 'joindice.png');
+
+	channel.send(attachment);
+}
 class Dice {
     constructor(ante, host, channel) {
         this.p1 = {
@@ -33,7 +71,7 @@ class Dice {
             id: host.id,
             roll: Math.floor(Math.random() * 6) + 1,
         }
-        this.channel = channel
+        this.channel = channel;
         this.status = 1;
         this.startTime = Date.now();
         this.ante = ante;
@@ -66,8 +104,8 @@ class Dice {
         Economy.giveMoney(loser.id, -this.ante);
         this.winner = winner;
         this.loser = loser;
-        this.channel.send({embed: Embeds.joinDice(this.p1, this.p2, this.winner, this.loser, this.ante)});
-        this.started = false;
+        joinDice(this.channel, this.p1.name, this.p2.name, this.p1.roll, this.p2.roll, winner.name);
+        this.status = 0;
         return;
     }
     end(ender) {
@@ -92,7 +130,7 @@ module.exports = {
             const ante = Number(args);
             const game = message.channel.game;
             if (game && game.status === 1) {
-                return message.channel.send(Config.reponses.gameStarted);
+                return message.channel.send(Config.responses.gameStarted);
             }
             if(Casino.validateBet(ante, message) !== true) return; 
             message.channel.game = new Dice(ante, message.author, message.channel);

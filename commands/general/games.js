@@ -3,28 +3,28 @@
 module.exports = {
     join: {
 		aliases: ['j'],
-		cooldown: 5,
+		cooldown: 0,
 		execute: (message) => {
 			const game = message.channel.game;
 			if (!game|| game.status === 0) {
-				return message.channel.send(Config.reponses.noGame);
+				return message.channel.send(Config.responses.noGame);
 			}
 			if (!game.join) {
 				return message.channel.send('it aint as simple as .j la bruh u gotta learn how to play the game u feel me check out .help ' + game.name);
 			}
 			else if (game.status !== 1) {
-				return message.channel.send(Config.reponses.gameStarted);
+				return message.channel.send(Config.responses.gameStarted);
 			}
 			else if (game.players && Object.keys(game.players).indexOf(message.author.id) !== -1) {
-				return message.channel.send(Config.reponses.inGame);
+				return message.channel.send(Config.responses.inGame);
 			}
 			if(game.ante) {
 				if (game.ante > Economy.getBalance(message.author.id)) {
-					return message.channel.send(Config.reponses.notEnoughMoney);
+					return message.channel.send(Config.responses.notEnoughMoney);
 				}
 		}
 			game.join(message.author);
-			message.react('🤑');
+			message.react(Config.emotes.check);
 		},
 	},
 		/*leave: {
@@ -49,7 +49,7 @@ module.exports = {
 		cooldown: 20,
 		execute: (message) => {
 			if (!game|| game.status === 0) {
-				return message.channel.send(Config.reponses.noGame);
+				return message.channel.send(Config.responses.noGame);
 			}
 			if(game.players) message.channel.send('`Players: ' + Object.keys(game.players) + '`');
 			else message.channel.send('This game doesn\'t have a players command');
@@ -59,7 +59,7 @@ module.exports = {
 	start: {
 		authreq: 'Operator',
 		cooldown: 10,
-		execute: (message) => {
+		execute: async (message) => {
 			const game = message.channel.game;
 	
 			if (!game || game.status === 0 || !game.start) {
@@ -68,7 +68,7 @@ module.exports = {
 			else if (game.status !== 1) {
 				return message.channel.send('the game already started.....');
 			}
-			game.start(message.author.id);
+			await game.start(message.author.id);
 		},
 	},
 	autostart: {
@@ -80,7 +80,7 @@ module.exports = {
 			if (!game || game.status === 0 || !game.start) {
 				return message.channel.send('do u see a game to autostart dumb bitch??? what i thought');
 			}
-			else if (game.autostartable === false) {
+			else if (!game.autostart === false) {
 				return message.channel.send('you can\'t autostart this game');
 			}
 			if(game.autostart === false) {
@@ -97,13 +97,13 @@ module.exports = {
 	end: {
 		cooldown: 10,
 		authreq: 'Operator',
-		execute: (message) => {
+		execute: async (message) => {
 			const game = message.channel.game;
 			const timeElapsed = game.startTime - Date.now();
 			if (!game || game.status === 0 || !game.end) {
-				return message.channel.send('do u see a game to end dumb bitch??? what i thot');
+				return message.channel.send(Config.responses.noGame);
 			}
-			game.end(message.author);
+			await game.end(message);
 		},
 	},
 };

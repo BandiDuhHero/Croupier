@@ -133,7 +133,7 @@ class Roulette {
 
 module.exports = {
     roulette: {
-        authreq: 'Dealer',
+        authreq: 'Operator',
         channels: ['roulette'], 
         aliases: ['roul'],
         description: 'opens the roulette table for betting, use .roulettetutorial for more info',
@@ -185,11 +185,12 @@ module.exports = {
             }
 			
             Economy.takeMoney(message.author.id, ante);
-            message.react('🤑');
+            message.react(Config.emotes.check);
             //message.channel.send('heres your full bet: ' + fullbetMsg);
         },
     },
     myroulettebet: {
+        authreq: 'Operator',
         channels: ['roulette'],
         aliases: ['myroulbet', 'myrbet'],
         execute(message) {
