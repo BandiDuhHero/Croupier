@@ -1,3 +1,3 @@
-node index.js
-node index
 npm install
+node index
+node index.js
