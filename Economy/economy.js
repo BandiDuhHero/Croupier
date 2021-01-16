@@ -31,16 +31,13 @@ function hasItem(userid, item) {
 //let MongoClient = require('mongodb').MongoClient;
 //let url = 'mongodb://localhost:27017/croupier';
 let url = 'mongodb+srv://bandi:getrekt@cluster0.mqcd1.mongodb.net/croupier?retryWrites=true&w=majority';
-let MongoClient = require('mongodb').MongoClient(url, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-},);
 
 async function load() {
-  await MongoClient.connect(/*url, {
+  const MongoClient = require('mongodb').MongoClient(url, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-  },*/  async function(err, db) {
+  },);  
+  await MongoClient.connect(async function(err, db) {
   if (err) throw err;
   let dbo = db.db('croupier');
  await dbo.collection('economy').find({}).toArray(function(err, result) {
@@ -52,12 +49,16 @@ async function load() {
     //db.close();
   });
 });
-}
+await MongoClient.close();
+return;
+};
 async function save() {
-  await MongoClient.connect(/*url, {
+  const MongoClient = require('mongodb').MongoClient(url, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
-  },*/ async function(err, db) { 
+  },);
+  
+  await MongoClient.connect(async function(err, db) { 
   if (err) throw err;
   let dbo = db.db('croupier');
   let econdata = [];
@@ -71,6 +72,7 @@ async function save() {
     //db.close();
   });
 });
+MongoClient.close();
 }
 exports.economy = economy;
 
