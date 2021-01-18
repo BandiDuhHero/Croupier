@@ -89,11 +89,15 @@ class Ambush {
             this.players[p].immunity = false;
             this.players[p].cantshoot = false;
         });
-       await this.channel.send('NEW ROUND!!!! Players Left: ' + playersLeft.join());
-        this.timer1 = setTimeout(async () => {
-            await this.channel.send('wait for it..........');
+        this.channel.send('NEW ROUND!!!! Players Left: ' + playersLeft.join());
+        this.timer1 = setTimeout(() => {
+            this.channel.send('wait for it..........');
+            this.timer2 = setTimeout(() => {
             this.round();
-		}, 5000);	
+		}, 3000);
+		}, 3000);
+        
+        	
         
 	};
 
@@ -102,10 +106,10 @@ class Ambush {
 		// make it hard to predict when it will say fire
 		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
 		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)];
-        this.timer2 = setTimeout(async() => {
+        this.timer3 = setTimeout(async() => {
             await this.channel.send('**FIRE!!!**');
             this.status = 3; //time to shoot
-            this.timer3 = setTimeout(() => { 
+            this.timer4 = setTimeout(() => { 
                 this.newRound();
             }, 10000);
         }, delay);
@@ -140,6 +144,10 @@ class Ambush {
         if (this.timer3) {
             clearTimeout(this.timer3);
             this.timer3 = null;
+        }
+        if (this.timer4) {
+            clearTimeout(this.timer3);
+            this.timer4 = null;
         }
     }
 };

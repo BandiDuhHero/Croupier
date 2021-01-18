@@ -1,5 +1,5 @@
 
-class hangman /*extends GameCorner.Game*/ {
+class anagrams /*extends GameCorner.Game*/ {
 	constructor(channel, players, status) {
 		//super(players, status);
 		this.channel = channel;

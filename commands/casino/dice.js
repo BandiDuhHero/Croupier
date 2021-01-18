@@ -3,7 +3,7 @@ let startDice = async (channel, name) => {
     const canvas = Canvas.createCanvas(1000, 350);
 	const ctx = canvas.getContext('2d');
     //if(name.length > 20) name =
-	const background = await Canvas.loadImage('./img/whitebg.jpg');
+	const background = await Canvas.loadImage(Config.images.diceBG);
 	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     ctx.lineWidth = 20;
 	ctx.strokeStyle = '#24678d';
@@ -22,7 +22,7 @@ let startDice = async (channel, name) => {
     ctx.drawImage(dice, 25, 225, 100, 100);
     ctx.drawImage(dice, 875, 225, 100, 100);
 
-	const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+	const attachment = new Discord.Attachment(canvas.toBuffer(), 'dice.png');
 
 	channel.send(attachment);
 }
@@ -30,7 +30,7 @@ let joinDice = async (channel, p1, p2, r1, r2, winner) => {
     const canvas = Canvas.createCanvas(1000, 350);
 	const ctx = canvas.getContext('2d');
 
-	const background = await Canvas.loadImage('./img/whitebg.jpg');
+	const background = await Canvas.loadImage(Config.images.diceBG);
 	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     ctx.lineWidth = 20;
 	ctx.strokeStyle = '#24678d';
@@ -64,6 +64,31 @@ let joinDice = async (channel, p1, p2, r1, r2, winner) => {
 
 	channel.send(attachment);
 }
+let endDice = async (channel, name) => {
+    const canvas = Canvas.createCanvas(1000, 350);
+	const ctx = canvas.getContext('2d');
+    //if(name.length > 20) name =
+	const background = await Canvas.loadImage(Config.images.diceBG);
+	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 20;
+	ctx.strokeStyle = '#24678d';
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '35px arial';
+    ctx.fillStyle = '#000000'; //black
+    let text = name + ' has ended the dice game';
+    let textWidth = ctx.measureText(text).width; 
+    ctx.fillText(text, (canvas.width/2) - (textWidth/2), 175);
+    
+	const dice = await Canvas.loadImage('./img/dice.png');
+    ctx.drawImage(dice, 25, 25, 100, 100);
+    ctx.drawImage(dice, 875, 25, 100, 100);
+    ctx.drawImage(dice, 25, 225, 100, 100);
+    ctx.drawImage(dice, 875, 225, 100, 100);
+
+	const attachment = new Discord.Attachment(canvas.toBuffer(), 'dice.png');
+
+	channel.send(attachment);
+}
 class Dice {
     constructor(ante, host, channel) {
         this.p1 = {
@@ -79,7 +104,8 @@ class Dice {
     }
     join(joiner, channel) {
         if (this.p1.id === joiner.id) {
-            return this.channel.send('how u gon join your own game......smh, you know damn well u cant do that:joy:');
+            this.channel.send('how u gon join your own game......smh, you know damn well u cant do that:joy:');
+            return false;
         }
         Economy.giveMoney(this.p1.id, this.ante);
         
@@ -108,14 +134,15 @@ class Dice {
         this.status = 0;
         return;
     }
-    end(ender) {
+    end(message) {
         const timeElapsed = this.startTime - Date.now();
-        if (this.p1.id !== this.author.id && timeElapsed / 1000 < 30) {
+        if (this.p1.id !== message.author.id && timeElapsed / 1000 < 30) {
             return this.channel.send('why you tryna end la bruhs game so fast???');
         }
-        this.channel.send({embed: Embeds.endDice(ender.username)});
+
         Economy.giveMoney(this.p1.id, this.ante);
-        this.started = false;
+        endDice(message.channel, message.author.username)
+        this.status = 0;
     }
 };
 

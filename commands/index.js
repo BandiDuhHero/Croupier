@@ -85,6 +85,7 @@ async function parse(message) {
 
 
 module.exports = {
+    hasAuth: hasAuth,
     cooldowns: new Discord.Collection(),
     commands: commands,
     parse: parse,

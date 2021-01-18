@@ -30,23 +30,23 @@ module.exports = {
         }
         if(Casino.validateBet(ante, message) !== true) return;
         else{
-            winnings -= ante;
-            const jackpot = ante * 25;
-            const triple7s = ante * 15;
-            const double7s = ante * 9;
-            const single7 = ante * 2;
+            const jackpot = ante * 100;
+            const triple7s = ante * 50;
+            const triple5s = ante * 21;
+            const firstPrize = ante * 5;
             const secondPrize = ante * 4;
-            const firstPrize = ante * 2;
+            const double = ante * 2;
+            const moneyBack = ante;
     
             const slotsObj = {
                 'slots':{
                     0:':flag_lv:',
                     1:':melon:',
                     2:':apple:',
-                    3:':watermelon:',
+                    3:':bell:',
                     4:':tangerine:',
-                    5:':bell:',
-                    6:':cherries:',
+                    5:':cherries:',
+                    6:':watermelon:',
                     7:':gem:',
                 },
             };
@@ -55,7 +55,7 @@ module.exports = {
     
             const n = [];
             const l = [];
-            const weight = [0, 1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 7];
+            const weight = [0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7];
             let output = '';
             const slotsProps = slotsObj['slots'];
             for(let i = 0; i < 5; i++) {
@@ -79,43 +79,53 @@ module.exports = {
                 output = '';
     
             }
-            if(l[3] == l[4] && l[3] == l[5]) {
-                const wmsg = await message.channel.send('You Win!!!');
-    
-                if(n[3] == 7) {
-                    winnings += jackpot;
-                    wmsg.edit(`**${message.author.username}**, You Win ${jackpot} 💰!!`);
+            console.log(n[0] + n[1] + n[2] + n[3] + n[4] + n[5]);
+            let r1 = l[0] == l[1] && l[0] == l[2];
+            let r2 = l[3] == l[4] && l[3] == l[5];
+            let r3 = l[6] == l[7] && l[6] == l[8];
+            let c1 = l[0] == l[3] && l[0] == l[6];
+            let c2 = l[1] == l[4] && l[1] == l[7];
+            let c3 = l[2] == l[5] && l[2] == l[8];
+            let match = 'nonexistant';
+             if(r1 || c2) match = n[1]
+                if(r2 || c1) match = n[3]
+             if(r3 || c3) match = n[8]
+                if(match === 'nonexistant') {
+                    Economy.giveMoney(message.author.id, -ante);
+                    return message.channel.send(`**${message.author.username}** You lost :(`);
                 }
-                else if(n[3] == 6) {
-                    winnings += triple7s;
-                    wmsg.edit(`**${message.author.username}**, You win ${triple7s} 💰!!`);
+                
+                if(match == 1) {
+                    winnings += moneyBack;
+                    message.channel.send(`**${message.author.username}**, You got your ante back`);
                 }
-                else if(n[3] == 4) {
-                    winnings += firstPrize;
-                    wmsg.edit(`**${message.author.username}**, You Win ${firstPrize} 💰!!`);
+                else if(match == 2) {
+                    winnings += double;
+                    message.channel.send(`**${message.author.username}**, You win ${double} ${Config.currencyName} !!`);
                 }
-                else if(n[3] != 0) {
+                else if(match == 3) {
                     winnings += secondPrize;
-                    wmsg.edit(`**${message.author.username}**, You Win ${secondPrize} 💰!!`);
+                    message.channel.send(`**${message.author.username}**, You win ${secondPrize} ${Config.currencyName} !!`);
                 }
-            }
-            else if(l[3] == l[4] && n[4] == 6 || l[4] == l[5] && n[4] == 6) {
-                const wmsg = await message.channel.send('You Win!!!');
-                winnings += double7s;
-                wmsg.edit(`**${message.author.username}**, You Win ${double7s} 💰!!`);
-            }
-            else if(n[3] == 6 || n[4] == 6 || n[5] == 6) {
-                winnings += single7;
-                message.channel.send(`**${message.author.username}**, You Win ${single7} 💰!!`);
-    
-            }
-            else{
-                message.channel.send(`**${message.author.username}** You lost :(`);
-    
-            }
+                else if(match == 4) {
+                    winnings += firstPrize;
+                   message.channel.send(`**${message.author.username}**, You win ${firstPrize} ${Config.currencyName} !!`);
+                }
+                else if(match == 5) {
+                    winnings += triple5s;
+                    message.channel.send(`**${message.author.username}**, You win ${triple5s} ${Config.currencyName} !!`);
+                }
+                else if(match == 7) {
+                    winnings += triple7s;
+                    message.channel.send(`**${message.author.username}**, You win ${triple7s} ${Config.currencyName} !!`);
+                }
+                else if(match == 0) {
+                    winnings += jackpot;
+                    message.channel.send(`**${message.author.username}**, You win ${jackpot} ${Config.currencyName} !!`);
+                }
             Economy.giveMoney(message.author.id, winnings);
         }
     },
-}
+},
     
 };

@@ -1,12 +1,11 @@
+
+
 module.exports = {
     atm: {
-        aliases: ['gold', 'shekels', 'monies', 'balance', 'pounds', 'coins', 'purse', 'fannypack', 'bal'],
+        aliases: [Config.currencyName, 'purse', 'wallet', 'balance', 'bal'],
         execute: async function(message) {
             const target = message.mentions.users.first() || message.author;
-            const notacurrency = ['balance', 'atm', 'purse', 'fannypack'];
-            let currencyName = message.content.slice(1).split(' ')[0];
-            if (notacurrency.indexOf(currencyName.toLowerCase) !== -1) currencyName = '💰';
-            return message.channel.send(`${target.tag} has ${Economy.getBalance(target.id)} ${currencyName}`);
+            return message.channel.send(`${target.tag} has ${Economy.getBalance(target.id)} ${Config.currencyName}`);
         },
     },
     inventory: {
@@ -24,12 +23,12 @@ module.exports = {
         },
     },
     transfer: {
-        aliases: ['transferbucks', 'transfermoney', 'give', 'givemoney', 'givebucks'],
+        aliases: ['transfer'+Config.currencyName, 'give', 'give'+Config.currencyName],
         execute: async function(message, args) {
             const currentAmount = Economy.getBalance(message.author.id);
             const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
             const transferTarget = message.mentions.users.first();
-            if (!message.mentions.users) return message.channel.send('Please @ the person you would like to send the money to');
+            if (!message.mentions.users) return message.channel.send('Please @ the person you would like to send the '+Config.currencyName+' to');
             if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
             if (transferAmount > currentAmount) return message.channel.send(`Sorry ${message.author}, you only have ${currentAmount}.`);
             if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
@@ -37,7 +36,7 @@ module.exports = {
             await Economy.giveMoney(message.author.id, -transferAmount);
             await Economy.giveMoney(transferTarget.id, transferAmount);
 
-            return message.channel.send(`Successfully transferred ${transferAmount}💰 to ${transferTarget.tag}. Your current balance is ${Economy.getBalance(message.author.id)}💰`);
+            return message.channel.send(`Successfully transferred ${transferAmount}${Config.currencyName} to ${transferTarget.tag}. Your current balance is ${Economy.getBalance(message.author.id)}${Config.currencyName}`);
         }
     },
     addmoney: {
@@ -58,9 +57,9 @@ module.exports = {
             return message.react(Config.emotes.check);
         }
     },
-    takemoney: {
+    removemoney: {
         authreq: 'Admin',
-        aliases: [],
+        aliases: ['rmoney'],
         execute: async (message, args) => {
             //if(message.author.id !== '186905302245965824') return message.channel.send('only bandi can do tht check yo privileges la bruh');
             const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
@@ -113,7 +112,8 @@ module.exports = {
             return message.channel.send(msg);
         },
     },
-    leaderboard: {
+    richestusers: {
+        aliases: ['richestuser'],
         execute: function(message, args) {
             let econ = Economy.economy;
             let econdata = [];

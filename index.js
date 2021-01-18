@@ -1,12 +1,12 @@
 global.fs = require('fs');
 global.uniqid = require('uniqid');
 global.Discord = require('discord.js');
-global.Economy = require('./Economy/economy')
+global.Canvas = require('canvas');
+global.Economy = require('./Economy/economy');
 global.Config = require('./config');
 global.Commands = require('./commands/index');
 global.GameCorner = require('./commands/gamecorner/index');
 global.Casino = require('./commands/casino/index');
-global.Canvas = require('canvas');
 global.Embeds = require('./embeds');
 
 global.client = new Discord.Client();

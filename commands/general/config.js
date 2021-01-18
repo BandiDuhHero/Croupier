@@ -4,7 +4,8 @@ module.exports = {
 		cooldown: 5,
 		execute(message) {
 			Config.images.ambush = 'https://media.discordapp.net/attachments/731505018225688648/734877483928911962/jinsoul_ayyyy.gif';
-			return message.react('✅');
+			Config.images.diceBG = './img/kpopdice.png';
+            return message.react('✅');
 		},
 	},
 	ghettomode: {

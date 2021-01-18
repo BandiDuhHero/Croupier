@@ -1,12 +1,12 @@
 const embeds = {
-    open: function(ante) {
+    open: function() {
         return {
             color: 0x25435d,
             title: 'BlackJack',
-            description: 'A new Blackjack game has been started for ' + ante + '💰\ntype .jbj to join ',
+            description: 'The BlackJack table is now open',
             fields: [{
                 name: 'How To Play',
-                value: '.stay to stay and .hit to hit',
+                value: '.j [ante] to join, .stand to stand, and .hit to hit (.guide blackjack for more information)',
             },
          ],
             image: {
@@ -14,16 +14,16 @@ const embeds = {
             },
         };
     },
-    start: function(ante) {
+    start: function() {
         return {
             color: 0x25435d,
             title: 'BlackJack',
-            description: 'the game has now started',
+            description: 'The game has started!',
             fields: [{
                 name: 'How To Play',
-                value: '.stay to stay and .hit to hit',
-            }, 
-        ],
+                value: '.j [ante] to join, .stand to stand, and .hit to hit (.guide blackjack for more information)',
+            },
+         ],
             image: {
                 url: 'https://upload.wikimedia.org/wikipedia/commons/e/e4/BlackJack6.jpg',
             },
@@ -44,9 +44,9 @@ const embeds = {
 const suits = ['♠', '♥', '♦', '♣'];
 const cardnums = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 class Blackjack {
-    constructor(ante, channel) {
+    constructor(channel) {
         this.autostart = false;
-        this.ante = ante;
+        this.joinante = true;
         this.channel = channel;
 		this.status = 1;
 		this.deck = [];
@@ -71,6 +71,7 @@ class Blackjack {
             });
         });
         this.shuffleDeck();
+        this.shuffleDeck();
     }
     shuffleDeck() {
         for (let i = 0; i < 1000; i++) {
@@ -82,20 +83,28 @@ class Blackjack {
             this.deck[location2] = tmp;
         }
     }
-    join(player) {
+    join(player, ante) {
         this.players[player.id] = {
             name: player.username,
 			hand: [this.deck.pop(), this.deck.pop()],
+            ante: ante,
         };
         let hand = this.players[player.id].hand;
         this.players[player.id].score = hand[0].weight + hand[1].weight;
-        //if (Object.keys(this.players).length === 10) this.start();
+        if (Object.keys(this.players).length === 10) this.start();
         if(player.id === 'dealer') return;
-        Economy.giveMoney(player.id, -this.ante);
+        Economy.giveMoney(player.id, -ante);
 	}
     start() {
-        clearTimeout(this.channel.bjTimeout);
-        this.status = '2'
+        clearTimeout(this.channel.gameTimeout);
+        if(Object.keys(this.players).length === 0) {
+            this.channel.gameTimeout = setTimeout(() => {
+                message.channel.game.start();
+            }, 60000);
+            return;
+        }
+        if(this.status === 2) return;
+        this.status = '2';
 		let players = this.players;
 		this.joinable = false;
 		this.turncount = 0;
@@ -104,21 +113,35 @@ class Blackjack {
 		Object.keys(players).forEach(i => {
             this.turns.push(i);	    
         });
-        this.join({id: 'dealer', username: 'dealer'});
+        this.join({id: 'dealer', name: 'dealer'});
         this.channel.send({
             embed: embeds.start(),
         });
         this.nextTurn();
 	}
 	nextTurn() {
-		if(this.turncount === this.turns.length) return this.payout();
+        let channel = this.channel;
+        if(this.turnTimer) clearTimeout(this.turnTimer);
+		if(this.turncount === this.turns.length) {
+            this.turn = {id: 'dealer'};
+            return this.payout();
+        }
         this.turn = client.users.get(this.turns[this.turncount]);
         this.turncount += 1;
         const phand = this.players[this.turn.id].hand;
         const hand = phand[0].num + phand[0].suit + ', ' + phand[1].num + phand[1].suit; 
         const score = phand[0].weight + phand[1].weight;
-		this.channel.send(this.turn.toString() + ' it is now your turn, heres your hand: ' + hand + '. score: ' + score);
-	}
+        this.channel.send(this.turn.toString() + ' it is now your turn, heres your hand: ' + hand + '. score: ' + score);
+        this.turnTimer = setTimeout(function() {
+            this.channel.send(this.turn.username + ' didn\'t make a move fast enough, they were automaticaly disqualified.');
+            this.disqualify(this.turn.id);
+        },1000*60*1);
+    }
+    disqualify(playerid) {
+        delete this.players[playerid]
+        if(this.turn.id === playerid) this.nextTurn();
+        if(this.turns.indexOf(playerid) !== -1) this.turns.splice(this.turns.indexOf(playerid), this.turns.length-1);
+    }
 	hit(playerid) {
 		let player = this.players[playerid];
 		let card = this.deck.pop();
@@ -127,7 +150,7 @@ class Blackjack {
         let hitmsg = this.turn.toString() + ' you got a ' + card.num + card.suit + ', ';
         if(player.score === 21) {
 			this.channel.send(hitmsg + ' you now have 21 you have been added to the winner list');
-            this.nextTurn();
+            //this.nextTurn();
         }
 		if(player.score < 21) {
 		    this.channel.send(hitmsg + ' you now have ' + player.score);
@@ -140,6 +163,7 @@ class Blackjack {
         
 	}
 	payout() {
+        if(this.turnTimer) clearTimeout(this.turnTimer);
         let dealer = this.players['dealer'];
         let players = this.players;
         let payoutmsg = 'the dealer has ' + dealer.score;
@@ -158,15 +182,19 @@ class Blackjack {
         let dscore = dealer.score;
         delete players['dealer'];
         Object.keys(players).forEach(i => {
-            if(dealer.score> 21) {
+            if(players[i].score === 21) {
+                    this.winners.push(players[i].name);
+                    Economy.giveMoney(i, Math.round(players[i].ante*2.5));
+                }
+            else if(dealer.score> 21) {
                 if(!players[i].inActive) {
                     this.winners.push(players[i].name);
-                    Economy.giveMoney(i, this.ante*1.5);
+                    Economy.giveMoney(i, Math.round(players[i].ante*1.5));
                 }
             }
-            else if(players[i].score < 21 && players[i].score > dscore || players[i].score === 21) {
+            else if(players[i].score < 21 && players[i].score > dscore)  {
                 this.winners.push(players[i].name);
-                Economy.giveMoney(i, Math.round(this.ante*2.5));
+                Economy.giveMoney(i, Math.round(Math.round(players[i].ante*2)));
             }
         });
         this.status = 0;
@@ -179,12 +207,13 @@ class Blackjack {
         if(this.autostart === true) {
             setTimeout(() => {
                 if(this.status === 0) {
+                    this.status = 1;
                     this.deck = [];
                     this.newDeck();
                     this.winners = [];
                     this.players = {};
-                    message.channel.send({
-                        embed: embeds.open(this.ante),
+                    this.channel.send({
+                        embed: embeds.open(),
                     });
         }
             }, 25000);
@@ -201,73 +230,66 @@ module.exports = {
         execute: (message, args) => {
             let bj = message.channel.game;
             if(bj) {
-                if(!message.channel.name === 'blackjack') {
-                    return message.channel.send('u trippin this ain even the blackjack room :skull:');
-                }
                 if (bj.status === 1) {
-                return message.channel.send('theres already a game use .j to join');
+                return message.channel.send(Config.responses.gameNotStarted);
             }
                 if (bj.status === 2) {
                 return message.channel.send('theres already a game in progress wait for it to finish lil nicc');
             }
+            if(bj.autostart === true) {
+                return message.channel.send(Config.responses.autoStart);
+            }
         }
-			if(!args) return message.channel.send('what is the ante?');
-			let ante = Number(args)
-			if (isNaN(ante)) {
-                return message.channel.send('ets not a number la bruh go back to 1st grade:joy:');
-            }
-            if (ante === 0) {
-                return message.channel.send('put up sum money den lil nicc');
-            }
-            if (!Number.isInteger(ante)) {
-                return message.channel.send('we not betting cents out here la bruh fuck does this look like');
-			}
-			message.channel.game = new Blackjack(ante, message.channel);
+			message.channel.game = new Blackjack(message.channel);
             let embed = message.channel.send({
-                embed: embeds.open(ante),
+                embed: embeds.open(),
             });
-			message.channel.bjTimeout = setTimeout(() => {
+			message.channel.gameTimeout = setTimeout(() => {
+               if(bj.status !== 0 && bj.autostart) {
                 message.channel.game.start();
+               }
             }, 60000);
         },
     },
     hit: {
+        channels: ['blackjack'],
         cooldown: 1,
         execute: (message, args) => {
             const bj = message.channel.game;
-            if (!bj || !bj.status === 0) {
-                return message.channel.send('theres no blackjack game.....');
+            if (!bj || bj.status === 0) {
+                return message.channel.send(Config.responses.noGame);
             }
             if (Object.keys(bj.players).indexOf(message.author.id) === -1) {
-                return message.channel.send('u not even in the game la bruh :joy:');
+                return message.channel.send(Config.responses.notInGame);
             }
             if (bj.status === 1) {
-                return message.channel.send('the game aint even start.....');
+                return message.channel.send(Config.responses.gameNotStarted);
             }
-            if (!bj.turn.id === message.author.id) {
-                return message.channel.send('its not yo turn la bruh');
+            if (bj.turn.id !== message.author.id) {
+                return message.channel.send(Config.responses.notYourTurn);
             }
             bj.hit(message.author.id);
         },
     },
-    stay: {
-        aliases: ['stand'],
+    stand: {
+        channels: ['blackjack'],
+        aliases: ['stay'],
         cooldown: 10,
         execute: (message, args) => {
             const bj = message.channel.game;
-            if (!bj || !bj.status === 0) {
-                return message.channel.send('theres no blackjack game.....');
+            if (!bj || bj.status === 0) {
+                return message.channel.send(Config.responses.noGame);
             }
             if (Object.keys(bj.players).indexOf(message.author.id) === -1) {
-                return message.channel.send('u not even in the game la bruh :joy:');
+                return message.channel.send(Config.responses.notInGame);
             }
             if (bj.status === 1) {
-                return message.channel.send('the game aint even start.....');
+                return message.channel.send(Config.responses.gameNotStarted);
             }
-            if (!bj.turn.id === message.author.id) {
-                return message.channel.send('its not yo turn la bruh');
+            if (bj.turn.id !== message.author.id) {
+                return message.channel.send(Config.responses.notYourTurn);
             }
-            message.channel.send(message.author.toString() + ' has stood at ' + bj.players[message.author.id].score);
+            message.channel.send(message.author.tag + ' has stood at ' + bj.players[message.author.id].score);
             bj.nextTurn();
         },
     },
