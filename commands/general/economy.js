@@ -1,6 +1,82 @@
 
 
 module.exports = {
+    opencasino: {
+		description: 'Opens the Casino',
+		authreq: 'Admin',
+		cooldown: 0,
+        execute: async (message) => {
+            Casino.open = true;
+            message.channel.send('Casino is now open');
+        },
+    },
+    closecasino: {
+		description: 'Closes the Casino',
+		authreq: 'Admin',
+		cooldown: 0,
+        execute: async (message) => {
+            Casino.open = false;
+            message.channel.send('Casino is now closed');
+        },
+    },
+    opengamecorner: {
+		description: 'Opens the Game Corner',
+        authreq: 'Admin',
+        aliases: ['opengc'],
+		cooldown: 0,
+        execute: async (message) => {
+            GameCorner.open = true;
+            message.channel.send('Game Corner is now open');
+        },
+    },
+    closegamecorner: {
+		description: 'Closes the Game Corner',
+        authreq: 'Admin',
+        aliases: ['closegc'],
+		cooldown: 0,
+        execute: async (message) => {
+            GameCorner.open = true;
+            message.channel.send('Game Corner is now closed');
+        },
+    },
+    addmoney: {
+        authreq: 'Admin',
+        aliases: ['amoney'],
+        cooldown: 0,
+        execute: async (message, args) => {
+            //if(message.author.id !== '186905302245965824') return message.channel.send('only bandi can do tht check yo privileges la bruh');
+            const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
+            const transferTarget = message.mentions.users.first();
+            if (!transferTarget) return message.channel.send('Please @ the person you would like to send the money to');
+            if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
+            if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
+            if (!Economy.economy[transferTarget.id]) {
+                Economy.economy[transferTarget.id] = new Economy.Member(transferTarget.id);
+            }
+            Economy.giveMoney(transferTarget.id, transferAmount);
+
+            return message.react(Config.emotes.check);
+        }
+    },
+    removemoney: {
+        authreq: 'Admin',
+        aliases: ['rmoney'],
+        cooldown: 0,
+        execute: async (message, args) => {
+            //if(message.author.id !== '186905302245965824') return message.channel.send('only bandi can do tht check yo privileges la bruh');
+            const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
+            const transferTarget = message.mentions.users.first();
+            if (!transferTarget) return message.channel.send('Please @ the person you would like to send the money to');
+            if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
+            if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
+            if (!Economy.economy[transferTarget.id]) {
+                Economy.economy[transferTarget.id] = new Economy.Member(transferTarget.id);
+            }
+            Economy.takeMoney(transferTarget.id, transferAmount);
+
+            return await message.react(Config.emotes.check);
+        }
+    },
     atm: {
         aliases: [Config.currencyName, 'purse', 'wallet', 'balance', 'bal'],
         execute: async function(message) {
@@ -39,42 +115,7 @@ module.exports = {
             return message.channel.send(`Successfully transferred ${transferAmount}${Config.currencyName} to ${transferTarget.tag}. Your current balance is ${Economy.getBalance(message.author.id)}${Config.currencyName}`);
         }
     },
-    addmoney: {
-        authreq: 'Admin',
-        aliases: ['amoney'],
-        execute: async (message, args) => {
-            //if(message.author.id !== '186905302245965824') return message.channel.send('only bandi can do tht check yo privileges la bruh');
-            const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
-            const transferTarget = message.mentions.users.first();
-            if (!transferTarget) return message.channel.send('Please @ the person you would like to send the money to');
-            if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
-            if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
-            if (!Economy.economy[transferTarget.id]) {
-                Economy.economy[transferTarget.id] = new Economy.Member(transferTarget.id);
-            }
-            Economy.giveMoney(transferTarget.id, transferAmount);
-
-            return message.react(Config.emotes.check);
-        }
-    },
-    removemoney: {
-        authreq: 'Admin',
-        aliases: ['rmoney'],
-        execute: async (message, args) => {
-            //if(message.author.id !== '186905302245965824') return message.channel.send('only bandi can do tht check yo privileges la bruh');
-            const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
-            const transferTarget = message.mentions.users.first();
-            if (!transferTarget) return message.channel.send('Please @ the person you would like to send the money to');
-            if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
-            if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
-            if (!Economy.economy[transferTarget.id]) {
-                Economy.economy[transferTarget.id] = new Economy.Member(transferTarget.id);
-            }
-            Economy.takeMoney(transferTarget.id, transferAmount);
-
-            return await message.react(Config.emotes.check);
-        }
-    },
+   
     buy: {
         execute: async (message, args) => {
             const inventory = Economy.economy[message.author.id].inventory;
@@ -114,6 +155,35 @@ module.exports = {
     },
     richestusers: {
         aliases: ['richestuser'],
+        execute: function(message, args) {
+            let econ = Economy.economy;
+            let econdata = [];
+            Object.keys(econ).forEach(i => {
+                if (client.users.get(i)) {
+                    econdata.push(econ[i]);
+                }
+            });
+            let compare = function(a, b) {
+                if (a.money < b.money)
+                    return 1;
+                if (a.money > b.money)
+                    return -1;
+                return 0;
+            }
+            econdata.sort(compare);
+            let msg = '';
+            let i = 0;
+            while (i < 11 && econdata[i]) {
+                let place = i + 1;
+                msg += '`(' + place + ') ' + client.users.get(econdata[i].userid).tag + ': ' + econdata[i].money + '💰`\n';
+                i++;
+            }
+            message.channel.send(msg);
+
+        },
+    },
+    leaderboard: {
+        aliases: ['ladder'],
         execute: function(message, args) {
             let econ = Economy.economy;
             let econdata = [];

@@ -1,27 +1,65 @@
 
 
 module.exports = {
-    /*scratchoff: {
+    scratchoff: {
         channels: ['scratchoff'],
         aliases: ['scratch'],
         execute: async (message, args) => {
-            if(Economy.hasItem(message.author.id, 'Scratch-Off')) {
+             if(Casino.open === false) {
+                return message.channel.send(Config.responses.casinoClosed);
+            }
+            let scratchoffs = Economy.checkInventory(message.author.id, 'Scratch-Offs');
+            let inventory = Economy.economy[message.author.id].inventory;
+            if(!scratchoffs || scratchoffs === 0) {
                 return message.channel.send('You don\'t own any Scratch-Offs');
             }
-            Economy.economy[userid].inventory['Scratch-Off'] -= 1;
-            if(Economy.economy[userid].inventory['Scratch-Off'] === 0) {
+            inventory['Scratch-Offs'] -= 1;
+            /*if(Economy.economy[userid].inventory['Scratch-Off'] === 0) {
                 delete Economy.economy[userid].inventory['Scratch-Off'];
-            }
+            }*/
             let chance = Math.floor(Math.random()*100)
-            if(chance > 95) {
-               await message.channel.send('You win '+);
+            let winnings = 0;
+            if(chance > 40) {
+              if(chance < 60) {
+                winnings += 20;
+              }
+              if(chance > 60 && chance < 70) {
+                winnings += 20;
             }
-            message.channel.send();
+            if(chance > 70 && chance < 80) {
+                winnings += 20;
+            }
+            if(chance > 80 && chance < 85) {
+                winnings += 20;
+            }
+            if(chance > 85 && chance < 90) {
+                winnings += 20;
+            }
+            if(chance > 90 && chance < 95) {
+                winnings += 20;
+            }
+            if(chance > 95 && chance < 98) {
+                winnings += 20;
+            }
+            if(chance > 98) {
+                winnings += 1000;
+            }
+              message.channel.send('You have won ' + winnings + ' ' + Config.currencyName + '!!!!'  );
+            }
+            else {
+                await message.channel.send('Awwww, you didn\'t win anything.....');
+            }
+            Economy.giveMoney(message.author.id, winnings);
+
         },
-    },*/
+    },
     slots: {
         channels: ['slots'],
+        cooldown: 5,
         execute: async (message, args) => {
+            if(Casino.open === false) {
+                return message.channel.send(Config.responses.casinoClosed);
+            }
         const author = message.author.id;;
         let ante = Number(args[0]);
         let winnings = 0;
@@ -79,7 +117,7 @@ module.exports = {
                 output = '';
     
             }
-            console.log(n[0] + n[1] + n[2] + n[3] + n[4] + n[5]);
+            //console.log(n[0] + n[1] + n[2] + n[3] + n[4] + n[5]);
             let r1 = l[0] == l[1] && l[0] == l[2];
             let r2 = l[3] == l[4] && l[3] == l[5];
             let r3 = l[6] == l[7] && l[6] == l[8];
@@ -96,7 +134,6 @@ module.exports = {
                 }
                 
                 if(match == 1) {
-                    winnings += moneyBack;
                     message.channel.send(`**${message.author.username}**, You got your ante back`);
                 }
                 else if(match == 2) {

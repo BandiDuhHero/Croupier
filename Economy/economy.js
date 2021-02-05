@@ -23,9 +23,9 @@ function getBalance(userid) {
 function getInventory(userid) {
   return Economy.economy[userid].inventory;
 }
-function hasItem(userid, item) {
-  if (Economy.inventory[item]) return true;
-  return false;
+function checkInventory(userid, item) {
+  if (!Economy.economy[userid].inventory[item]) return false;
+  return true;
 }
 
 //let MongoClient = require('mongodb').MongoClient;
@@ -84,7 +84,7 @@ exports.getBalance = getBalance;
 
 exports.getInventory = getInventory;
 
-exports.hasItem = hasItem;
+exports.checkInventory = checkInventory;
 
 exports.takeMoney = takeMoney;
 

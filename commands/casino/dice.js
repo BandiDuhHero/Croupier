@@ -154,6 +154,9 @@ module.exports = {
         usage: '[amount]',
         cooldown: 1,
         execute:  (message, args) => {
+            if(Casino.open === false) {
+                return message.channel.send(Config.responses.casinoClosed);
+            }
             const ante = Number(args);
             const game = message.channel.game;
             if (game && game.status === 1) {

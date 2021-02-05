@@ -1,11 +1,13 @@
 module.exports = {
-	devs: ['186905302245965824'],
+	devs: ['186905302245965824','324757818609631233'],
 	modlog: '668656441606930442',
 	shopservice: '734078393959710741',
 	prefix: '.',
+    currencyName: 'Aruy',
 	images: {
 		ambush: 'https://media.giphy.com/media/QxYv4Y4lThPYNMnlDY/giphy.gif',
 		passthebomb: 'https://media.giphy.com/media/g2YdApKEna2sg/giphy.gif',
+        diceBG: './img/whitebg.jpg',
 	},
 	emotes: {
 		moneybag: '💰',
@@ -16,14 +18,18 @@ module.exports = {
 	},
 	responses: {
 		wrongChannel: 'This is not the right channel for that command',
+        DMsOnly: 'This Command is meant for DMs only',
 		needPerm: 'You don\'t have permission to use that command',
 		noMention: 'Please mention the user you are referring to',
 		//games
+		casinoClosed: 'The Casino is closed, no new games can be started until it reopens',
+		gamecornerClosed: 'The Game Corner is closed, no new games can be started until it reopens',
 		noGame: 'There is no game open in this channel at the moment',
 		gameStarted: 'There is already a game started in this channel',
 		gameNotStarted: 'The game hasn\'t started yet use .j to join',
 		inGame: 'You are already in this game',
 		notInGame: 'You are not in this game',
+        autoStart: 'Games cannot be manually created while autostart is active',
 		notYourTurn: 'It\'s not your turn at the moment',
 		//bets
 		notEnoughMoney: 'You don\'t have enough money to do that',	

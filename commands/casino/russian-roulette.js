@@ -3,108 +3,72 @@ const embeds = {
     open: function() {
         return {
             color: 0x25435d,
-            title: 'BlackJack',
-            description: 'The BlackJack table is now open',
+            title: 'Russian Roulette',
+            description: 'The Russian Roulette is now open!',
             fields: [{
                 name: 'How To Play',
-                value: '.j [ante] to join, .stand to stand, and .hit to hit (.guide blackjack for more information)',
+                value: 'Survive pulling the trigger',
             },
          ],
             image: {
-                url: 'https://upload.wikimedia.org/wikipedia/commons/e/e4/BlackJack6.jpg',
+                url: Config.images.russianroulette,
             },
         };
     },
     start: function() {
         return {
             color: 0x25435d,
-            title: 'BlackJack',
+            title: 'Russian Roulette',
             description: 'The game has started!',
             fields: [{
                 name: 'How To Play',
-                value: '.j [ante] to join, .stand to stand, and .hit to hit (.guide blackjack for more information)',
+                value: 'Survive pulling the trigger',
             },
          ],
             image: {
-                url: 'https://upload.wikimedia.org/wikipedia/commons/e/e4/BlackJack6.jpg',
+                url: Config.images.russianroulette,
             },
         };
     },
     winners: function(msg) {
         return {
             color: 0x25435d,
-            title: 'BlackJack',
+            title: 'Russian Roulette',
             description: msg,
             image: {
-                url: 'https://upload.wikimedia.org/wikipedia/commons/e/e4/BlackJack6.jpg',
+                url: Config.images.russianroulette,
             },
         };
     },
 };
 
-const suits = ['♠', '♥', '♦', '♣'];
-const cardnums = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-class Blackjack {
-    constructor(channel) {
+c
+class RussianRoulette {
+    constructor(channel, joinante) {
         this.autostart = false;
         this.joinable = true;
-        this.joinante = true;
+        this.joinante = joinante;
+        this.pot = 0;
         this.channel = channel;
 		this.status = 1;
-		this.deck = [];
-        this.newDeck();
         this.winners = [];
 		this.players = {};
     }
-    newDeck() {
-        cardnums.forEach(i => {
-            suits.forEach(x => {
-                let weight = parseInt(i);
-                if (i == 'J' || i == 'Q' || i == 'K') weight = 10;
-
-                if (i == 'A') weight = 11;
-
-                let card = {
-                    num: i,
-                    suit: x,
-                    weight: weight
-                };
-                this.deck.push(card);
-            });
-        });
-        this.shuffleDeck();
-        this.shuffleDeck();
+    pullTriggers() {
+        
     }
-    shuffleDeck() {
-        for (let i = 0; i < 1000; i++) {
-            let location1 = Math.floor((Math.random() * this.deck.length));
-            let location2 = Math.floor((Math.random() * this.deck.length));
-            let tmp = this.deck[location1];
-
-            this.deck[location1] = this.deck[location2];
-            this.deck[location2] = tmp;
-        }
-    }
-    join(player, ante) {
+    join(player) {
         this.players[player.id] = {
             name: player.username,
-			hand: [this.deck.pop(), this.deck.pop()],
-            ante: ante,
         };
-        let hand = this.players[player.id].hand;
-        this.players[player.id].score = hand[0].weight + hand[1].weight;
-        if(player.id === 'dealer') return;
-        Economy.giveMoney(player.id, -ante);
+        Economy.giveMoney(player.id, -this.joinante);
+        this.pot += this.joinante;
         if (Object.keys(this.players).length === 10) this.start();
+        
 	}
     start() {
         clearTimeout(this.channel.gameTimeout);
-       /* if(Object.keys(this.players).length === 0) {
-            this.channel.gameTimeout = setTimeout(() => {
-                message.channel.game.start();
-            }, 60000);
-            return;
-        }*/
+        if(Object.keys(this.players).length === 0) return;
         if(this.status === 2) return;
         this.status = 2;
 		let players = this.players;

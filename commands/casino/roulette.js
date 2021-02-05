@@ -140,6 +140,9 @@ module.exports = {
         description: 'opens the roulette table for betting, use .roulettetutorial for more info',
         cooldown: 5,
         execute: async (message, args) => {
+            if(Casino.open === false) {
+                return message.channel.send(Config.responses.casinoClosed);
+            }
             const roul = message.channel.game;
             if (roul) {
                 if (roul.status !== 0) {
