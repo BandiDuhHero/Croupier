@@ -7,7 +7,9 @@ class Member {
   constructor(userid) {
     this.userid = userid;
     this.money = 0;
+    this.job = null;
     this.inventory = {};
+    this.stats = {};
   }
 };
 
