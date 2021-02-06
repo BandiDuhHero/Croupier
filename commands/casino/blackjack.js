@@ -226,7 +226,7 @@ class Blackjack {
 module.exports = {
     blackjack: {
         authreq: 'Operator',
-        channels: ['blackjack-1'],
+        channels: ['blackjack'],
         aliases: ['bj'],
         cooldown: 5,
         execute: (message, args) => {
