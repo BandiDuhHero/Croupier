@@ -2,7 +2,7 @@ module.exports = {
     welcome: function(user) {
         return {
             color: 0x25435d,
-            description: 'Hello ' + user + ' welcome to **{server}**! We hope you enjoy your stay here, we will sure enjoy having you :)'
+            description: 'Hello ' + user + ' welcome to **{server}**! We hope you enjoy your stay here, we will sure enjoy having you :)',
             thumbnail: {
                 url: 'https://imgur.com/a/0IHV7J3',
             },
