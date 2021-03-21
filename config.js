@@ -2,6 +2,7 @@ module.exports = {
 	devs: ['186905302245965824','324757818609631233'],
 	modlog: '668656441606930442',
 	shopservice: '734078393959710741',
+	welcome: '809985436403367957',
 	prefix: '.',
     currencyName: 'Aruy',
 	images: {
