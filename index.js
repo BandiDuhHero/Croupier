@@ -45,8 +45,8 @@ client.on("guildMemberAdd", (member) => {
 	if(!Economy.economy[member.id]) {
 		Economy.economy[member.id] = new Economy.Member(member.id);
 	}
-	let embed = client.channels.get(Config.welcome).send{
-                embed: Embeds.welcome(),
+	let embed = client.channels.get(Config.welcome).send({
+                embed: Embeds.welcome(member.mention()),
             });
   });
 
