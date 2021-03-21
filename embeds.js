@@ -1,11 +1,15 @@
 module.exports = {
-    startDice: function(host, amount) {
+    welcome: function(user) {
         return {
             color: 0x25435d,
-            description: host + ' has started a dice game for ' + amount + '💰\ntype .joindice to join unless u scared or sum',
+            description: 'Hello ' + user + ' welcome to **{server}**! We hope you enjoy your stay here, we will sure enjoy having you :)'
             thumbnail: {
-                url: 'http://bestanimations.com/Games/Dice/rolling-dice-gif-3.gif',
+                url: 'https://imgur.com/a/0IHV7J3',
             },
+            fields: [{
+                name: 'How to Play',
+                value: 'Use .help to learn how to use Croupier',
+            }, ],
         };
     },
     joinDice: function(p1, p2, winner, loser, amount) {
@@ -26,8 +30,8 @@ module.exports = {
                 url: 'http://bestanimations.com/Games/Dice/rolling-dice-gif-3.gif',
             },
             fields: [{
-                name: 'use .startdice (insert amount here to start a new game)',
-                value: 'slatt',
+                name: 'How to Play',
+                value: 'Use .help to learn how to use Croupier',
             }, ],
         };
     },
