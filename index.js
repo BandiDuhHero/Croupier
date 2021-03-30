@@ -48,6 +48,8 @@ client.on("guildMemberAdd", (member) => {
 	let embed = client.channels.get(Config.welcome).send({
                 embed: Embeds.welcome(member.tag),
             });
+	console.log(member.id);
+	console.log(member.tag);
   });
 
 client.on("messageDelete", (messageDelete) => {
