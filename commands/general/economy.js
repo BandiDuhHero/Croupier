@@ -78,7 +78,7 @@ module.exports = {
         }
     },
     atm: {
-        aliases: [Config.currencyName, 'purse', 'wallet', 'balance', 'bal'],
+        aliases: [Config.currencyName, 'purse', 'wallet', 'balance', 'bal', 'bank'],
         execute: async function(message) {
             const target = message.mentions.users.first() || message.author;
             return message.channel.send(`${target.tag} has ${Economy.getBalance(target.id)} ${Config.currencyName}`);
@@ -139,7 +139,7 @@ module.exports = {
         },
     },
     shop: {
-        execute: async (message, args) => {
+        execute: async function(message, args) => {
             let shop = Economy.Shop;
             let msg = '```    Solum Shop - MBA = "Must Be Approved" L1 = (Limit One)\n';
             msg += '-----------------------------------------------------------------\n\n';
@@ -151,6 +151,43 @@ module.exports = {
             });
             msg += '```';
             return message.channel.send(msg);
+        },
+    },
+	apply: {
+        execute: async function(message, args) {
+            let job = Economy.jobs[message.author.id];
+            let chance = Math.floor(Math.random()*100);
+            if(job) {
+		    return await message.channel.send('You already have a job.');
+	    }
+	    if(chance < 10) {
+	    	return await message.channel.send('');
+	    }
+	    if (chance > 75) {
+	    return await message.channel.send('');
+	    }
+
+        },
+    }, 
+	work: {
+        execute: async function(message, args) {
+            let job = Economy.jobs[message.author.id];
+            let chance = Math.floor(Math.random()*100);
+            if(!job) {
+		    return await message.channel.send('You don\'t have a job, use .apply to try to get one');
+	    }
+	    if(job.done) {
+		    return await message.channel.send('Your job is already done, come back tommorrow to work again');
+	    }
+	    if(chance < 10) {
+	    	return await message.channel.send('There was a accident on the freeway and u missed your shift, come again tommorrow');
+	    }
+	    
+            message.channel.send(msg);
+		if (chance > 75) {
+	    return await message.channel.send('You got a bonus!');
+	    }
+
         },
     },
     richestusers: {
