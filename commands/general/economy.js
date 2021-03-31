@@ -155,7 +155,7 @@ module.exports = {
     },
 	apply: {
         execute: async function(message, args) {
-            let job = Economy.jobs[message.author.id];
+            let job = Economy.economy[message.author.id].job;
             let chance = Math.floor(Math.random()*100);
             if(job) {
 		    return await message.channel.send('You already have a job.');
@@ -171,7 +171,7 @@ module.exports = {
     }, 
 	work: {
         execute: async function(message, args) {
-            let job = Economy.jobs[message.author.id];
+            let job = Economy.economy[message.author.id].job;
             let chance = Math.floor(Math.random()*100);
             if(!job) {
 		    return await message.channel.send('You don\'t have a job, use .apply to try to get one');
@@ -182,8 +182,6 @@ module.exports = {
 	    if(chance < 10) {
 	    	return await message.channel.send('There was a accident on the freeway and u missed your shift, come again tommorrow');
 	    }
-	    
-            message.channel.send(msg);
 		if (chance > 75) {
 	    return await message.channel.send('You got a bonus!');
 	    }
