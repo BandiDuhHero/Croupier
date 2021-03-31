@@ -79,7 +79,7 @@ module.exports = {
     },
     atm: {
         aliases: [Config.currencyName, 'purse', 'wallet', 'balance', 'bal', 'bank'],
-        execute: async function(message) {
+        execute: async (message) => {
             const target = message.mentions.users.first() || message.author;
             return message.channel.send(`${target.tag} has ${Economy.getBalance(target.id)} ${Config.currencyName}`);
         },
@@ -100,7 +100,7 @@ module.exports = {
     },
     transfer: {
         aliases: ['transfer'+Config.currencyName, 'give', 'give'+Config.currencyName],
-        execute: async function(message, args) {
+        execute: async (message, args) => {
             const currentAmount = Economy.getBalance(message.author.id);
             const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
             const transferTarget = message.mentions.users.first();
@@ -139,7 +139,7 @@ module.exports = {
         },
     },
     shop: {
-        execute: async function(message, args) => {
+        execute: async (message, args) => {
             let shop = Economy.Shop;
             let msg = '```    Solum Shop - MBA = "Must Be Approved" L1 = (Limit One)\n';
             msg += '-----------------------------------------------------------------\n\n';
@@ -154,7 +154,7 @@ module.exports = {
         },
     },
 	apply: {
-        execute: async function(message, args) {
+        execute: async (message, args) => {
             let job = Economy.economy[message.author.id].job;
             let chance = Math.floor(Math.random()*100);
             if(job) {
@@ -170,7 +170,7 @@ module.exports = {
         },
     }, 
 	work: {
-        execute: async function(message, args) {
+        execute: async (message, args) => {
             let job = Economy.economy[message.author.id].job;
             let chance = Math.floor(Math.random()*100);
             if(!job) {
