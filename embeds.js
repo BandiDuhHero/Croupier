@@ -1,7 +1,7 @@
 module.exports = {
     welcome: function(user) {
         return {
-            color: #8a3fbf,
+            color: 0x8a3fbf,
             title: 'Welcome!',
             description: 'Hello ' + user + ' welcome to Solum! We hope you enjoy your stay here, we will surely enjoy having you :)',
             image: {
