@@ -10,7 +10,7 @@ module.exports = {
             fields: [
                 {
                 name: 'Verify',
-                value: 'React in rules to gain access to the server',
+                value: 'React in <#${666261400246681610}>` to gain access to the server',
             },
                 {
                 name: 'How to Play',
