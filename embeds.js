@@ -10,7 +10,7 @@ module.exports = {
             fields: [
                 {
                 name: 'Verify',
-                value: 'React in #server-info` to gain access to the server',
+                value: 'React in #server-info to gain access to the server',
             },
                 {
                 name: 'How to Play',
