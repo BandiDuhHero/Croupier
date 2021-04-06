@@ -1,39 +1,37 @@
-
-
 module.exports = {
     opencasino: {
-		description: 'Opens the Casino',
-		authreq: 'Admin',
-		cooldown: 0,
+        description: 'Opens the Casino',
+        authreq: 'Admin',
+        cooldown: 0,
         execute: async (message) => {
             Casino.open = true;
             message.channel.send('Casino is now open');
         },
     },
     closecasino: {
-		description: 'Closes the Casino',
-		authreq: 'Admin',
-		cooldown: 0,
+        description: 'Closes the Casino',
+        authreq: 'Admin',
+        cooldown: 0,
         execute: async (message) => {
             Casino.open = false;
             message.channel.send('Casino is now closed');
         },
     },
     opengamecorner: {
-		description: 'Opens the Game Corner',
+        description: 'Opens the Game Corner',
         authreq: 'Admin',
         aliases: ['opengc'],
-		cooldown: 0,
+        cooldown: 0,
         execute: async (message) => {
             GameCorner.open = true;
             message.channel.send('Game Corner is now open');
         },
     },
     closegamecorner: {
-		description: 'Closes the Game Corner',
+        description: 'Closes the Game Corner',
         authreq: 'Admin',
         aliases: ['closegc'],
-		cooldown: 0,
+        cooldown: 0,
         execute: async (message) => {
             GameCorner.open = true;
             message.channel.send('Game Corner is now closed');
@@ -99,12 +97,12 @@ module.exports = {
         },
     },
     transfer: {
-        aliases: ['transfer'+Config.currencyName, 'give', 'give'+Config.currencyName],
+        aliases: ['transfer' + Config.currencyName, 'give', 'give' + Config.currencyName],
         execute: async (message, args) => {
             const currentAmount = Economy.getBalance(message.author.id);
             const transferAmount = Number(args[1]); //args.split(/ +/g).find(arg => !/<@!?\d+>/g.test(arg));
             const transferTarget = message.mentions.users.first();
-            if (!message.mentions.users) return message.channel.send('Please @ the person you would like to send the '+Config.currencyName+' to');
+            if (!message.mentions.users) return message.channel.send('Please @ the person you would like to send the ' + Config.currencyName + ' to');
             if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`Sorry ${message.author}, that's an invalid amount.`);
             if (transferAmount > currentAmount) return message.channel.send(`Sorry ${message.author}, you only have ${currentAmount}.`);
             if (transferAmount <= 0) return message.channel.send(`Please enter an amount greater than zero, ${message.author}.`);
@@ -115,7 +113,7 @@ module.exports = {
             return message.channel.send(`Successfully transferred ${transferAmount}${Config.currencyName} to ${transferTarget.tag}. Your current balance is ${Economy.getBalance(message.author.id)}${Config.currencyName}`);
         }
     },
-   
+
     buy: {
         execute: async (message, args) => {
             const inventory = Economy.economy[message.author.id].inventory;
@@ -130,7 +128,7 @@ module.exports = {
             if (item.execute && await item.execute(message) === false) return;
             Economy.takeMoney(message.author.id, item.price);
             if (Object.keys(inventory).indexOf(item.name) === -1) {
-                Economy.economy[message.author.id].inventory[item.name] = 0;
+                inventory[item.name] = 0;
             }
             inventory[item.name] += 1;
             await client.channels.get(Config.shopservice).send(message.author.tag + ' just bought ' + item.name);
@@ -153,38 +151,38 @@ module.exports = {
             return message.channel.send(msg);
         },
     },
-	apply: {
+    apply: {
         execute: async (message, args) => {
             let job = Economy.economy[message.author.id].job;
-            let chance = Math.floor(Math.random()*100);
-            if(job) {
-		    return await message.channel.send('You already have a job.');
-	    }
-	    if(chance < 10) {
-	    	return await message.channel.send('');
-	    }
-	    if (chance > 75) {
-	    return await message.channel.send('');
-	    }
+            let chance = Math.floor(Math.random() * 100);
+            if (job) {
+                return await message.channel.send('You already have a job.');
+            }
+            if (chance < 10) {
+                return await message.channel.send('');
+            }
+            if (chance > 75) {
+                return await message.channel.send('');
+            }
 
         },
-    }, 
-	work: {
+    },
+    work: {
         execute: async (message, args) => {
             let job = Economy.economy[message.author.id].job;
-            let chance = Math.floor(Math.random()*100);
-            if(!job) {
-		    return await message.channel.send('You don\'t have a job, use .apply to try to get one');
-	    }
-	    if(job.done) {
-		    return await message.channel.send('Your job is already done, come back tommorrow to work again');
-	    }
-	    if(chance < 10) {
-	    	return await message.channel.send('There was a accident on the freeway and u missed your shift, come again tommorrow');
-	    }
-		if (chance > 75) {
-	    return await message.channel.send('You got a bonus!');
-	    }
+            let chance = Math.floor(Math.random() * 100);
+            if (!job) {
+                return await message.channel.send('You don\'t have a job, use .apply to try to get one');
+            }
+            if (job.done) {
+                return await message.channel.send('Your job is already done, come back tommorrow to work again');
+            }
+            if (chance < 10) {
+                return await message.channel.send('There was a accident on the freeway and u missed your shift, come again tommorrow');
+            }
+            if (chance > 75) {
+                return await message.channel.send('You got a bonus!');
+            }
 
         },
     },
