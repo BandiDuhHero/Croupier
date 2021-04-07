@@ -41,15 +41,15 @@ client.on('message', async message => {
         message.reply('there was an error trying to execute that command!');
     }*/ 
 });
-client.on("guildMemberAdd", (member) => {
-	if(!Economy.economy[member.id]) {
-		Economy.economy[member.id] = new Economy.Member(member.id);
+client.on("guildMemberAdd", member => {
+	if(!Economy.economy[member.user.id]) {
+		Economy.economy[member.user.id] = new Economy.Member(member.id);
 	}
 	let embed = client.channels.get(Config.welcome).send({
-                embed: Embeds.welcome(member.tag),
+                embed: Embeds.welcome(member.user.tag),
             });
-	console.log(member.id);
-	console.log(member.tag);
+	console.log(member.user.id);
+	console.log(member.user.tag);
   });
 
 client.on("messageDelete", (messageDelete) => {
