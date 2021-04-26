@@ -183,6 +183,10 @@ module.exports = {
             if (chance > 75) {
                 return await message.channel.send('You got a bonus!');
             }
+            else {
+                
+                return await setTimeout(message.channel.send(job.paymessage), );
+            }
 
         },
     },
