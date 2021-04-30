@@ -151,7 +151,7 @@ module.exports = {
             return message.channel.send(msg);
         },
     },
-    apply: {
+   /* apply: {
         execute: async (message, args) => {
             let job = Economy.economy[message.author.id].job;
             let chance = Math.floor(Math.random() * 100);
@@ -189,64 +189,5 @@ module.exports = {
             }
 
         },
-    },
-    richestusers: {
-        aliases: ['richestuser'],
-        execute: function(message, args) {
-            let econ = Economy.economy;
-            let econdata = [];
-            Object.keys(econ).forEach(i => {
-                if (client.users.get(i)) {
-                    econdata.push(econ[i]);
-                }
-            });
-            let compare = function(a, b) {
-                if (a.money < b.money)
-                    return 1;
-                if (a.money > b.money)
-                    return -1;
-                return 0;
-            }
-            econdata.sort(compare);
-            let msg = '';
-            let i = 0;
-            while (i < 11 && econdata[i]) {
-                let place = i + 1;
-                msg += '`(' + place + ') ' + client.users.get(econdata[i].userid).tag + ': ' + econdata[i].money + '💰`\n';
-                i++;
-            }
-            message.channel.send(msg);
-
-        },
-    },
-    leaderboard: {
-        aliases: ['ladder'],
-        execute: function(message, args) {
-            let econ = Economy.economy;
-            let econdata = [];
-            Object.keys(econ).forEach(i => {
-                if (client.users.get(i)) {
-                    econdata.push(econ[i]);
-                }
-            });
-            let compare = function(a, b) {
-                if (a.money < b.money)
-                    return 1;
-                if (a.money > b.money)
-                    return -1;
-                return 0;
-            }
-            econdata.sort(compare);
-            let msg = '';
-            let i = 0;
-            while (i < 11 && econdata[i]) {
-                let place = i + 1;
-                msg += '`(' + place + ') ' + client.users.get(econdata[i].userid).tag + ': ' + econdata[i].money + '💰`\n';
-                i++;
-            }
-            message.channel.send(msg);
-
-        },
-    },
-
+    },*/
 };
