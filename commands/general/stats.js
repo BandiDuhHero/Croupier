@@ -27,6 +27,6 @@ module.exports = {
             }
             message.channel.send(msg);
 
-        },
+        }
     },
 };
