@@ -134,10 +134,10 @@ class Blackjack {
         const hand = phand[0].num + phand[0].suit + ', ' + phand[1].num + phand[1].suit; 
         const score = phand[0].weight + phand[1].weight;
         this.channel.send(this.turn.toString() + ' it is now your turn, heres your hand: ' + hand + '. score: ' + score);
-        this.turnTimer = setTimeout(function() {
-            this.channel.send(this.turn.username + ' didn\'t make a move fast enough, they were automaticaly disqualified.');
-            this.disqualify(this.turn.id);
-        },1000*60*1);
+       /* this.turnTimer = setTimeout(function() {
+        this.channel.send(this.turn.username + ' didn\'t make a move fast enough, they were automaticaly disqualified.');
+        this.disqualify(this.turn.id);
+        },1000*60*1);*/
     }
     disqualify(playerid) {
         delete this.players[playerid]
