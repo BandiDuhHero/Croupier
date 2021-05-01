@@ -50,8 +50,8 @@ class Blackjack {
         this.joinable = true;
         this.joinante = true;
         this.channel = channel;
-		this.status = 1;
-		this.deck = [];
+	this.status = 1;
+	this.deck = [];
         this.newDeck();
         this.winners = [];
 		this.players = {};
