@@ -38,7 +38,7 @@ module.exports = {
             }
         },
     },
-    /*leave: {
+    leave: {
 			aliases: ['l'],
 			cooldown: 30,
 			execute: (message) => {
@@ -49,13 +49,13 @@ module.exports = {
 				else if (!Object.keys(game.players).indexOf(message.author.id) !== -1) {
 					return message.channel.send('u not even in the game la bruh :joy:');
 				}
-				else if(game.notLeavable) {
+				else if(!game.disqualify) {
 					return message.channel.send('you can\'t leave this game, use ".end" if you want to end the game');
 				}
-				game.leave(message.author);
+				game.disqualify(message.author.id);
 				message.channel.send(message.author.tag + ' has left ' + game.name);
 			},
-    },*/
+    },
     disqualify: {
         aliases: ['dq'],
 			cooldown: 10,

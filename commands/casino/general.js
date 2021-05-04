@@ -1,6 +1,22 @@
 
 
 module.exports = {
+    coinflip: {
+        channels: ['flip'],
+        aliases: ['scratch'],
+        execute: async (message, args) => {
+            if(Casino.open === false) {
+                return message.channel.send(Config.responses.casinoClosed);
+            }
+        const author = message.author.id;;
+        let ante = Number(args[0]);
+        let winnings = 0;
+        if(args.length < 1) {
+            ante = 1
+        }
+        if(Casino.validateBet(ante, message) !== true) return;
+        }
+    },
     scratchoff: {
         channels: ['scratchoff'],
         aliases: ['scratch'],

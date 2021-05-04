@@ -158,6 +158,7 @@ module.exports = {
             });
             message.channel.roulCanvas = roulCanvas;
             message.channel.gameTimeout = setTimeout(async () => {
+                const roul = message.channel.game;
                 if(roul.status !== 0 && roul.autostart) {
                 await roul.spin();
                 let roulCanvas = message.channel.send({

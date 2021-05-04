@@ -45,21 +45,21 @@ client.on("guildMemberAdd", member => {
 	if(!Economy.economy[member.user.id]) {
 		Economy.economy[member.user.id] = new Economy.Member(member.id);
 	}
-	let embed = client.channels.get(Config.welcome).send({
+	/*let embed = client.channels.get(Config.welcome).send({
                 embed: Embeds.welcome(member.user.tag),
-            });
+            });*/
 	console.log(member.user.id);
 	console.log(member.user.tag);
   });
 
-client.on("messageDelete", (messageDelete) => {
+/*client.on("messageDelete", (messageDelete) => {
 	if(messageDelete.author.bot) return;
 	client.channels.get(Config.modlog).send(`The message : "${messageDelete.content}" by ${messageDelete.author.tag} was deleted.`);
 	});
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(oldMessage.author.bot) return;
 	client.channels.get(Config.modlog).send(`The message : "${oldMessage.content}" by ${oldMessage.author.tag} was changed to "${newMessage.content}"`);
-	});
+	});*/
 client.on('error', console.log);
 
 client.once('disconnect', async () => {

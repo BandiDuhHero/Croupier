@@ -99,12 +99,12 @@ class Blackjack {
 	}
     start() {
         clearTimeout(this.channel.gameTimeout);
-       /* if(Object.keys(this.players).length === 0) {
+       if(Object.keys(this.players).length === 0) {
             this.channel.gameTimeout = setTimeout(() => {
-                message.channel.game.start();
+                this.channel.game.start();
             }, 60000);
             return;
-        }*/
+        }
         if(this.status === 2) return;
         this.status = 2;
 		let players = this.players;
@@ -140,6 +140,7 @@ class Blackjack {
         },1000*60*1);*/
     }
     disqualify(playerid) {
+        Economy.giveMoney(playerid, this.players[playerid].ante);
         delete this.players[playerid]
         if(this.turn.id === playerid) this.nextTurn();
         if(this.turns.indexOf(playerid) !== -1) this.turns.splice(this.turns.indexOf(playerid), this.turns.length-1);

@@ -150,6 +150,11 @@ class Ambush {
             this.timer4 = null;
         }
     }
+    /*disqualify(playerid) {
+        delete this.players[playerid]
+        if(this.turn.id === playerid) this.nextTurn();
+        if(this.turns.indexOf(playerid) !== -1) this.turns.splice(this.turns.indexOf(playerid), this.turns.length-1);
+    }*/
 };
 module.exports = {
     ambush: {
