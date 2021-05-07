@@ -2,7 +2,7 @@ const max_players = 10;
 
 const embeds = {
     open: function() {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Pass The Bomb!',
@@ -35,7 +35,7 @@ const embeds = {
         };
 	},
 	winner: function(winner, reward) {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
 			title: 'Pass The Bomb!',
@@ -56,7 +56,7 @@ const embeds = {
         };
 	},
 	end: function() {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Pass The Bomb!',
@@ -122,7 +122,7 @@ class PTB  {
 	};
 	async bomb() {
 		this.clearTimers();
-		const attachment = new Discord.Attachment('./img/bomb.gif', 'bomb.gif');
+		const attachment = new Discord.Discord.MessageAttachment('./img/bomb.gif', 'bomb.gif');
 		await this.channel.send(this.players[this.playerWithBomb].name + ' dropped the bomb and is eliminated', attachment);
 		delete this.players[this.playerWithBomb];
 		this.timer3 = setTimeout(() => {
