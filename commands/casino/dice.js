@@ -60,7 +60,7 @@ let joinDice = async (channel, p1, p2, r1, r2, winner) => {
     ctx.drawImage(dice, 25, 225, 100, 100);
     ctx.drawImage(dice, 875, 225, 100, 100);
 
-	const attachment = new Discord.Attachment(canvas.toBuffer(), 'joindice.png');
+	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'joindice.png');
 
 	channel.send(attachment);
 }
@@ -85,7 +85,7 @@ let endDice = async (channel, name) => {
     ctx.drawImage(dice, 25, 225, 100, 100);
     ctx.drawImage(dice, 875, 225, 100, 100);
 
-	const attachment = new Discord.Attachment(canvas.toBuffer(), 'dice.png');
+	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'dice.png');
 
 	channel.send(attachment);
 }
