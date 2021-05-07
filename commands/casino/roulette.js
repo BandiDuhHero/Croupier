@@ -1,6 +1,6 @@
 let embeds = {
     startRoulette: function() {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Roulette',
