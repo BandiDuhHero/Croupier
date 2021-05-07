@@ -1,7 +1,7 @@
 const max_players = 10;
 const embeds = {
     open: function() {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Ambush!',
@@ -21,7 +21,7 @@ const embeds = {
         };
     },
     winner: function(winner, reward) {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Ambush!',
@@ -41,7 +41,7 @@ const embeds = {
         };
     },
     end: function() {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Ambush!',
