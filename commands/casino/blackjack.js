@@ -246,11 +246,11 @@ module.exports = {
                 return message.channel.send(Config.responses.autoStart);
             }
         }
-			message.channel.game = new Blackjack(message.channel);
+	    message.channel.game = new Blackjack(message.channel);
             let embed = message.channel.send({
                 embed: embeds.open(),
             });
-			message.channel.gameTimeout = setTimeout(() => {
+		message.channel.gameTimeout = setTimeout(() => {
                if(bj.status !== 0 && bj.autostart) {
                 message.channel.game.start();
                }
