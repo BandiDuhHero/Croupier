@@ -22,7 +22,7 @@ module.exports = {
             let i = 0;
             while (i < 11 && econdata[i]) {
                 let place = i + 1;
-                msg += '`(' + place + ') ' + client.users.get(econdata[i].userid).tag + ': ' + econdata[i].money + '💰`\n';
+                msg += '`(' + place + ') ' + client.users.cache.get(econdata[i].userid).tag + ': ' + econdata[i].money + '💰`\n';
                 i++;
             }
             message.channel.send(msg);
