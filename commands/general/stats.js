@@ -1,4 +1,10 @@
-
+let compareStats = function(a, b, category) {
+                if (a[category] < b[category])
+                    return 1;
+                if (a[category] > b[category])
+                    return -1;
+                return 0;
+            }
 module.exports = {
  moneyladder: {
         aliases: ['richestusers', 'richestuser'],
@@ -20,9 +26,9 @@ module.exports = {
             econdata.sort(compare);
             let msg = '';
             let i = 0;
-            while (i < 11 && econdata[i]) {
+            while (i < 10 && econdata[i]) {
                 let place = i + 1;
-                msg += '`(' + place + ') ' + client.users.cache.get(econdata[i].userid).tag + ': ' + econdata[i].money + '💰`\n';
+                msg += '`(' + place + ') ' + client.users.cache.get(econdata[i].userid).tag + ': ' + econdata[i].money + Config.currencyName\n';
                 i++;
             }
             message.channel.send(msg);
