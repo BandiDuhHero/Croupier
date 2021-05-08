@@ -23,7 +23,7 @@ const embeds = {
 	},
 	
 	bomb: function(msg) {
-        const attachment = new Discord.Attachment('./img/', 'sample.png');
+        const attachment = new Discord.MessageAttachment('./img/', 'sample.png');
         return {
             color: 0x25435d,
             title: 'Pass The Bomb!',
@@ -166,9 +166,9 @@ class PTB  {
 };
 module.exports = {
 	passthebomb: {
-		authreq: 'Operator',
-		channels: ['pass-the-bomb'],
-		aliases: ['ptb'],
+	authreq: 'Operator',
+	channels: ['pass-the-bomb'],
+	aliases: ['ptb'],
         cooldown: 5,
         execute: async (message, args) => {
             const game = message.channel.game;
