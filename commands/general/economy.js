@@ -194,7 +194,7 @@ module.exports = {
         execute: async (message, args) => {
             let chance = Math.floor(Math.random() * 100);
             let pay = 100;
-            if (Economy.economy[message.author.id].jobdone) {
+            if (Economy[message.author.id].jobdone) {
                 return await message.channel.send('Your job is already done, come back tommorrow to work again');
             }
             if (chance < 10) {
@@ -204,7 +204,7 @@ module.exports = {
             else {
                 await Economy.giveMoney(message.author.id, pay);
                 await message.channel.send('You worked and earned ' + pay +  ' ' + Config.currencyName);
-                Economy.economy[message.author.id].jobdone = true;
+                Economy[message.author.id].jobdone = true;
             }
             if (chance > 75) {
                 await Economy.giveMoney(message.author.id, 80);
