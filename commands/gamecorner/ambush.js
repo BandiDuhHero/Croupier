@@ -79,7 +79,7 @@ class Ambush {
         this.newRound();
     }
     async newRound() {
-        //this.clearTimers();
+        this.clearTimers();
         this.status = 2;
         let pIds = Object.keys(this.players);
         if (pIds.length < 2) return this.showWinner();
@@ -92,9 +92,7 @@ class Ambush {
         this.channel.send('NEW ROUND!!!! Players Left: ' + playersLeft.join());
         this.timer1 = setTimeout(() => {
             this.channel.send('wait for it..........');
-            this.timer2 = setTimeout(() => {
             this.round();
-		}, 3000);
 		}, 3000);
         
         	
@@ -102,14 +100,14 @@ class Ambush {
 	};
 
     round() {
-        //this.clearTimers();
-		// make it hard to predict when it will say fire
-		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
-		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)];
-        this.timer3 = setTimeout(async() => {
+        this.clearTimers();
+	// make it hard to predict when it will say fire
+	let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
+	let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)];
+        this.timer2 = setTimeout(async() => {
             await this.channel.send('**FIRE!!!**');
             this.status = 3; //time to shoot
-            this.timer4 = setTimeout(() => { 
+            this.timer3 = setTimeout(() => { 
                 this.newRound();
             }, 10000);
         }, delay);
@@ -135,7 +133,7 @@ class Ambush {
     clearTimers() {
         if (this.timer1) {
             clearTimeout(this.timer1);
-            this.timer2 = null;
+            this.timer1 = null;
         }
         if (this.timer2) {
             clearTimeout(this.timer2);
@@ -144,10 +142,6 @@ class Ambush {
         if (this.timer3) {
             clearTimeout(this.timer3);
             this.timer3 = null;
-        }
-        if (this.timer4) {
-            clearTimeout(this.timer3);
-            this.timer4 = null;
         }
     }
     /*disqualify(playerid) {
