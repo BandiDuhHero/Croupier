@@ -7,9 +7,9 @@ function hasAuth(message, req) {
     if (Config.devs.indexOf(message.author.id) > -1) {
         return true;
     }
-    let admin = message.member.roles.find(r => r.name === 'Admin');
-    let mod = message.member.roles.find(r => r.name === 'Mod');
-    let operator = message.member.roles.find(r => r.name === 'Operator');
+    let admin = message.member.roles.cache.find(r => r.name === 'Admin');
+    let mod = message.member.roles.cache.find(r => r.name === 'Mod');
+    let operator = message.member.roles.cachefind(r => r.name === 'Operator');
     if (req === 'Operator') {
         if (admin || mod || operator) return true;
     }
@@ -42,7 +42,7 @@ async function parse(message) {
     } 
     /*if (command.channels && command.channels.indexOf(message.channel.name) === -1) {
         return message.channel.send(Config.responses.wrongChannel + ' (try ' +  
-        message.guild.channels.find(channel => channel.name === command.channels[0]).toString() + ')');
+        message.guild.channels.cache.find(channel => channel.name === command.channels[0]).toString() + ')');
     }*/
     if (command.guildOnly && message.channel.type !== 'text') {
         return message.reply('I can\'t execute that command inside DMs!');
