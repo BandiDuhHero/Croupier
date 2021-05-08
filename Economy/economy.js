@@ -1,7 +1,7 @@
 let economy = {};
 /* 
 restart economy
-const list = client.guilds.get("651547995141177355"); list.members.forEach(member => Economy.economy[member.user.id] = new Economy.Member(member.user.id))
+.eval const list = client.guilds.cache.get("651547995141177355").members.cache;  list.forEach(member => Economy.economy[member.user.id] = new Economy.Member(member.user.id));
 */
 class Member {
   constructor(userid) {
