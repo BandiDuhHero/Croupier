@@ -116,7 +116,7 @@ class PTB  {
 		// make it hard to predict when it will blow
 		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
 		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)] + 5000;
-		this.timer2 = setTimeout(() => {
+		this.timer2 = setTimeout(async () => {
 		this.clearTimers();
 		const attachment = new Discord.Discord.MessageAttachment('./img/bomb.gif', 'bomb.gif');
 		await this.channel.send(this.players[this.playerWithBomb].name + ' dropped the bomb and is eliminated', attachment);
