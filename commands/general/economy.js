@@ -131,7 +131,7 @@ module.exports = {
                 inventory[item.name] = 0;
             }
             inventory[item.name] += 1;
-            await client.channels.get(Config.shopservice).send(message.author.tag + ' just bought ' + item.name);
+            await client.channels.cache.get(Config.shopservice).send(message.author.tag + ' just bought ' + item.name);
             //return message.channel.send('Your purchase of `' + item.name + '` has been finalized');
             await message.react(Config.emotes.check);
         },
