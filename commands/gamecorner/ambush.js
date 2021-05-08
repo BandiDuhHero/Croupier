@@ -79,7 +79,7 @@ class Ambush {
         this.newRound();
     }
     async newRound() {
-        this.clearTimers();
+        //this.clearTimers();
         this.status = 2;
         let pIds = Object.keys(this.players);
         if (pIds.length < 2) return this.showWinner();
@@ -102,7 +102,7 @@ class Ambush {
 	};
 
     round() {
-        this.clearTimers();
+        //this.clearTimers();
 		// make it hard to predict when it will say fire
 		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
 		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)];
@@ -126,7 +126,7 @@ class Ambush {
             Economy.giveMoney(winner.id, this.reward);
     }
     end() {
-        //this.clearTimers();
+        this.clearTimers();
         this.status = 0; // 0- no active game
         this.channel.send(({
             embed: embeds.end()
