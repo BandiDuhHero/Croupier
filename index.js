@@ -71,7 +71,11 @@ client.once('disconnect', async () => {
 let saveEconomy = setInterval(() => {
 	Economy.save();
 }, 1000*60*20);
-
+let resetJobs = setInterval(() => {
+	Object.keys(Economy.economy).forEach(i => {
+		Economy.economy[i].jobdone = false;
+	});
+}, 1000*60*60*24);
 process.on('unhandledRejection', function(reason, p){
     console.log("Possibly Unhandled Rejection at: Promise ", p, " reason: ", reason);
     // application specific logging here
