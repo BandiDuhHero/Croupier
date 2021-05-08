@@ -31,7 +31,7 @@ module.exports = {
             let i = 0;
             while (i < listlength && econdata[i]) {
                 let place = i + 1;
-                msg += '(' + place + ') ' + client.users.cache.get(econdata[i].userid).tag + ': ' + econdata[i].money + ' ' + Config.currencyName + \n;
+                msg += '(' + place + ') ' + client.users.cache.get(econdata[i].userid).tag + ': ' + econdata[i].money + ' ' + Config.currencyName + '\n';
                 i++;
             }
             if(listlength > 10) {
