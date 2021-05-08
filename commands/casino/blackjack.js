@@ -128,7 +128,7 @@ class Blackjack {
             this.turn = {id: 'dealer'};
             return this.payout();
         }
-        this.turn = client.users.get(this.turns[this.turncount]);
+        this.turn = client.users.cache.get(this.turns[this.turncount]);
         this.turncount += 1;
         const phand = this.players[this.turn.id].hand;
         const hand = phand[0].num + phand[0].suit + ', ' + phand[1].num + phand[1].suit; 
