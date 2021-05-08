@@ -107,7 +107,7 @@ class PTB  {
 			this.round();
 		}, 5000);
 	};
-	round() {
+	async round() {
 		let pIds = Object.keys(this.players);
 		if (pIds.length < 2) return this.showWinner();
 		this.playerWithBomb = pIds[Math.floor(Math.random() * pIds.length)];
