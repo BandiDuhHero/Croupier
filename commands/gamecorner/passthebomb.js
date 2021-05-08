@@ -94,7 +94,7 @@ class PTB  {
 		this.newRound();
 	}
 	newRound() {
-		//this.clearTimers();
+		this.clearTimers();
 		this.status = 2;
 		let pIds = Object.keys(this.players);
 		if (pIds.length < 2) return this.showWinner();
@@ -115,23 +115,19 @@ class PTB  {
 		this.channel.send('The bomb is handed to ' + this.players[this.playerWithBomb].name);
 		// make it hard to predict when it will blow
 		let randomDelay = [2250, 10500, 4750, 6500, 3500, 9250, 7750, 12000, 2500, 5000]; 
-		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)] + 10000;
+		let delay = randomDelay[Math.floor(Math.random()*randomDelay.length)] + 5000;
 		this.timer2 = setTimeout(() => {
-			this.bomb();
-		}, delay);
-	};
-	async bomb() {
-		//this.clearTimers();
+		this.clearTimers();
 		const attachment = new Discord.Discord.MessageAttachment('./img/bomb.gif', 'bomb.gif');
 		await this.channel.send(this.players[this.playerWithBomb].name + ' dropped the bomb and is eliminated', attachment);
 		delete this.players[this.playerWithBomb];
 		this.timer3 = setTimeout(() => {
 			this.newRound();
 		}, 3000);
-		
+		}, delay);
 	};
 	async showWinner() {
-		//this.clearTimers();
+		this.clearTimers();
 		this.status = 0;
 		setTimeout( async() => {
 		
@@ -152,7 +148,7 @@ class PTB  {
 	clearTimers() {
         if (this.timer1) {
             clearTimeout(this.timer1);
-            this.timer2 = null;
+            this.timer1 = null;
         }
         if (this.timer2) {
             clearTimeout(this.timer2);
