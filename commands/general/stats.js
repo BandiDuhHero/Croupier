@@ -6,7 +6,7 @@ module.exports = {
             let econ = Economy.economy;
             let econdata = [];
             Object.keys(econ).forEach(i => {
-                if (client.users.get(i)) {
+                if (client.users.cache.get(i)) {
                     econdata.push(econ[i]);
                 }
             });
