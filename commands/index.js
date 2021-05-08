@@ -9,7 +9,7 @@ function hasAuth(message, req) {
     }
     let admin = message.member.roles.cache.find(r => r.name === 'Admin');
     let mod = message.member.roles.cache.find(r => r.name === 'Mod');
-    let operator = message.member.roles.cachefind(r => r.name === 'Operator');
+    let operator = message.member.roles.cache.find(r => r.name === 'Operator');
     if (req === 'Operator') {
         if (admin || mod || operator) return true;
     }
