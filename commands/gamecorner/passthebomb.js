@@ -94,7 +94,7 @@ class PTB  {
 		this.newRound();
 	}
 	newRound() {
-		this.clearTimers();
+		//this.clearTimers();
 		this.status = 2;
 		let pIds = Object.keys(this.players);
 		if (pIds.length < 2) return this.showWinner();
@@ -121,7 +121,7 @@ class PTB  {
 		}, delay);
 	};
 	async bomb() {
-		this.clearTimers();
+		//this.clearTimers();
 		const attachment = new Discord.Discord.MessageAttachment('./img/bomb.gif', 'bomb.gif');
 		await this.channel.send(this.players[this.playerWithBomb].name + ' dropped the bomb and is eliminated', attachment);
 		delete this.players[this.playerWithBomb];
@@ -131,7 +131,7 @@ class PTB  {
 		
 	};
 	async showWinner() {
-		this.clearTimers();
+		//this.clearTimers();
 		this.status = 0;
 		setTimeout( async() => {
 		
