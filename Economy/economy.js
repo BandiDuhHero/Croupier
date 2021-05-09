@@ -10,6 +10,7 @@ class Member {
     this.job = null;
     this.inventory = {};
     this.stats = {};
+    this.debt = 0;
   }
 };
 
