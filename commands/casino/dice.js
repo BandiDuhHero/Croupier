@@ -136,8 +136,8 @@ class Dice {
     }
     end(message) {
         const timeElapsed = this.startTime - Date.now();
-        if (this.p1.id !== message.author.id && timeElapsed / 1000 < 30) {
-            return this.channel.send('why you tryna end la bruhs game so fast???');
+        if (this.p1.id !== message.author.id && timeElapsed / 1000 > 30) {
+            return this.channel.send('Wait 30 seconds to end another users game.'); //why you tryna end la bruhs game so fast???
         }
 
         Economy.giveMoney(this.p1.id, this.ante);
