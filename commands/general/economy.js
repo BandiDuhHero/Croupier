@@ -194,8 +194,8 @@ module.exports = {
         execute: async (message, args) => {
             let lastDaily = Economy.economy[message.author.id].lastDaily;
             let timeElapsed = Date.now() - lastDaily;
-            let chance = Math.floor(Math.random() * 10);
-            let pay = Math.floor(Math.random()*1000);
+            let chance = Math.floor(Math.random() * 100);
+            let pay = Math.floor(Math.random()*10);
             
             if (timeElapsed > 1000*60*60*24) {
                 await Economy.giveMoney(message.author.id, pay);
@@ -213,7 +213,7 @@ module.exports = {
             let lastWeekly = Economy.economy[message.author.id].lastWeekly;
             let timeElapsed = Date.now() - lastWeekly;
             let chance = Math.floor(Math.random() * 100);
-            let pay = Math.floor(Math.random()*1000);
+            let pay = Math.floor(Math.random()*100);
             
             if (timeElapsed > 1000*60*60*24*7) {
                 await Economy.giveMoney(message.author.id, pay);
