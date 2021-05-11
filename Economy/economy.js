@@ -10,6 +10,8 @@ class Member {
     this.job = null;
     this.inventory = {};
     this.stats = {};
+    this.lastDaily = Date.now() - 1000*60*60*24;
+    this.lastWeekly = Date.now() - 1000*60*60*24*7;
     this.debt = 0;
   }
 };
