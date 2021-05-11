@@ -190,27 +190,42 @@ module.exports = {
 
         },
     },*/
-    work: {
+    daily: {
         execute: async (message, args) => {
-            let chance = Math.floor(Math.random() * 100);
+            let lastDaily = Economy.economy[message.author.id].lastDaily;
+            if(!lastDaily) lastDaily = Date.now();
+            let timeElapsed = lastDaily - Date.now();
+            let chance = Math.floor(Math.random() * 10);
             let pay = Math.floor(Math.random()*1000);
-            if (Economy.economy[message.author.id].jobdone) {
-                return await message.channel.send('Your job is already done, come back tomorrow to work again');
-            }
-            if (chance < 10) {
-                return await message.channel.send('There was a accident on the freeway and u missed your shift, come again tomorrow');
+            
+            if (!lastDaily || timeElapsed < 1000*60*60*24) {
+                await Economy.giveMoney(message.author.id, pay);
+                await message.channel.send('Daily Payment: ' + pay +  ' ' + Config.currencyName);
+                Economy.economy[message.author.id].jobdone = true;
             }
             
             else {
+               return await message.channel.send('You already received your payment today');
+            }
+        }
+    },
+    weekly: {
+        execute: async (message, args) => {
+            let lastDaily = Economy.economy[message.author.id].lastweekly;
+            if(!lastDaily) lastDaily = Date.now();
+            let timeElapsed = lastDaily - Date.now();
+            let chance = Math.floor(Math.random() * 100);
+            let pay = Math.floor(Math.random()*1000);
+            
+            if (!lastDaily || timeElapsed < 1000*60*60*24*7) {
                 await Economy.giveMoney(message.author.id, pay);
-                await message.channel.send('You worked and earned ' + pay +  ' ' + Config.currencyName);
+                await message.channel.send('Weekly Payment: ' + pay +  ' ' + Config.currencyName);
                 Economy.economy[message.author.id].jobdone = true;
             }
-            if (chance > 75) {
-                await Economy.giveMoney(message.author.id, 80);
-                return await message.channel.send('You got a bonus of 80 ' + Config.currencyName);
+            
+            else {
+               return await message.channel.send('You already received your payment this week');
             }
-
-        },
+        }
     },
 };
