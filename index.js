@@ -9,7 +9,7 @@ global.GameCorner = require('./commands/gamecorner/index');
 global.Casino = require('./commands/casino/index');
 global.Embeds = require('./embeds');
 
-global.client = new Discord.Client({fetchAllMembers:true});
+global.client = new Discord.Client();
 const PREFIX = Config.prefix; 
 
 client.login('NjUxNTQ4NjI0ODE5NDUzOTcy.Xeb24Q.ZrrlfT-cp6QpN_-3HhnUyvkLNmM');
