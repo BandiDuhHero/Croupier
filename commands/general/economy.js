@@ -197,6 +197,8 @@ module.exports = {
             let chance = Math.floor(Math.random() * 100);
             let pay = Math.floor(Math.random()*10);
             
+            if(pay === 0) pay += 1;
+            
             if (timeElapsed > 1000*60*60*24) {
                 await Economy.giveMoney(message.author.id, pay);
                 await message.channel.send('Daily Payment: ' + pay +  ' ' + Config.currencyName);
@@ -214,6 +216,8 @@ module.exports = {
             let timeElapsed = Date.now() - lastWeekly;
             let chance = Math.floor(Math.random() * 100);
             let pay = Math.floor(Math.random()*100);
+            
+            if(pay === 0) pay += 1;
             
             if (timeElapsed > 1000*60*60*24*7) {
                 await Economy.giveMoney(message.author.id, pay);
