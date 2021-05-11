@@ -28,9 +28,9 @@ client.once('ready', async () => {
 client.on('message', async message => {
 	if (message.author.bot) return;
 	//if(message.content === '!join')	client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
-	/*if(!Economy.economy[message.author.id]) {
+	if(!Economy.economy[message.author.id]) {
 		Economy.economy[message.author.id] = new Economy.Member(message.author.id);
-	}*/
+	}
 	//Economy.economy[message.author.id].money += 1;
 	let commands = Commands.commands;
     Commands.parse(message);
