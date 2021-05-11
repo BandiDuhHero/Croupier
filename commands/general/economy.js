@@ -193,7 +193,6 @@ module.exports = {
     daily: {
         execute: async (message, args) => {
             let lastDaily = Economy.economy[message.author.id].lastDaily;
-            if (!lastDaily) lastDaily = Date.now();
             let timeElapsed = Date.now() - lastDaily;
             let chance = Math.floor(Math.random() * 10);
             let pay = Math.floor(Math.random()*1000);
@@ -212,12 +211,11 @@ module.exports = {
     weekly: {
         execute: async (message, args) => {
             let lastWeekly = Economy.economy[message.author.id].lastWeekly;
-            if(!lastWeekly) lastWeekly = Date.now();
             let timeElapsed = Date.now() - lastWeekly;
             let chance = Math.floor(Math.random() * 100);
             let pay = Math.floor(Math.random()*1000);
             
-            if (!lastWeekly || timeElapsed < 1000*60*60*24*7) {
+            if (timeElapsed < 1000*60*60*24*7) {
                 await Economy.giveMoney(message.author.id, pay);
                 await message.channel.send('Weekly Payment: ' + pay +  ' ' + Config.currencyName);
                 Economy.economy[message.author.id].lastWeekly = Date.now();
