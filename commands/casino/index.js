@@ -20,7 +20,16 @@ function validateBet (amount, message) {
 		return true;
 	}
 }
+/*const commandFiles = fs.readdirSync('./').filter(file => file.endsWith('.js'));
 
+for (const file of commandFiles) {
+	if(file != 'index.js')
+	const commandfile = require(`./${file}`);
+	// set a new item in the Collection
+	// with the key as the command name and the value as the exported module
+	client.commands.set(command.name, command);
+	const commands = Object.assign({}, commandfile);
+}*/
 const BlackJack = require('./blackjack');
 const Roulette = require('./roulette');
 const general = require('./general');
