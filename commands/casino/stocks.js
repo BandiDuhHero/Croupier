@@ -25,7 +25,7 @@ module.exports = {
             return message.channel.send(Config.responses.casinoClosed);
         }
         args = message.content.slice(Config.prefix).split(',');
-        let ticker = args[0]; 
+        let ticker = args[0].split(' ')[1]; 
         let name = args[1]; 
         let price = Number(args[2]); 
         if(args.length > 3) return message.channel.send('Usage: .ipo [ticker], [name], [price]');
