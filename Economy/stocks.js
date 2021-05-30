@@ -87,7 +87,7 @@ async function load() {
     if (err) throw err;
     //console.log(result);
       result.forEach(i => {
-      stockmarket[i.ticker] = i;
+      market[i.ticker] = i;
     });
     //db.close();
   });
