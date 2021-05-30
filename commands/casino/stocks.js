@@ -24,13 +24,15 @@ module.exports = {
         if(Casino.open === false) {
             return message.channel.send(Config.responses.casinoClosed);
         }
+        args = message.content.slice(Config.prefix).split(',');
         let ticker = args[0]; 
         let name = args[1]; 
         let price = Number(args[2]); 
+        if(args.length > 3) return message.channel.send('Usage: .ipo [ticker], [name], [price]');
         if(market[ticker]) return message.channel.send('There is already a stock with that ticker');
         if(isNaN(price)) return message.channel.send('The stock price must be a number');
-      if(args.length > 3) return message.channel.send('Usage: .ipo [ticker], [name], [price]');
       
+
       market[ticker] = new Stock(ticker, name, price);
       Economy.Stocks.save();
 }
