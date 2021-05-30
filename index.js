@@ -78,10 +78,10 @@ let saveEconomy = setInterval(() => {
 	Economy.save();
 }, 1000*60*20);
 let saveStocks = setInterval(() => {
-	Economy.Stocks.save();
+	Economy.StockMarket.save();
 }, 1000*60*60*12);
 let StockMovement = setInterval(() => {
-	Economy.Stocks.Movement();
+	Economy.StockMarket.Movement();
 }, 1000*60*60
 );
 
