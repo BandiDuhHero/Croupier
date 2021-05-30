@@ -30,6 +30,7 @@ module.exports = {
         if(market[ticker]) return message.channel.send('There is already a stock with that ticker');
         if(isNaN(price)) return message.channel.send('The stock price must be a number');
       if(args.length > 3) return message.channel.send('Usage: .ipo [ticker], [name], [price]');
+      
       market[ticker] = new Stock(ticker, name, price);
       Economy.Stocks.save();
 }

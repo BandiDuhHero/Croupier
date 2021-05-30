@@ -47,7 +47,11 @@ class Stock {
     this.price -= Math.floor((pct / 100) * this.price); 
 }
 };
-
+function Movement () {
+  Object.keys(market).forEach(i => {
+    market[i].rpc();
+  });
+};
 async function save() {
   const MongoClient = require('mongodb').MongoClient(url, {
     useUnifiedTopology: true,
@@ -99,7 +103,9 @@ TM: 'Thylan\'s Manufacturing',
 KS: 'KingBillu\'s Suites',
 SD: 'Sleaze\'s Dealership'
 };*/
-
+exports.save = save;
+exports.load = load;
+exports.Movement = Movement;
 exports.Stock = Stock;
 
 exports.market = market;
