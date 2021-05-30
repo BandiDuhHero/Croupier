@@ -93,9 +93,9 @@ sellstock: {
             }
           let txt = '`';
           Object.keys(market).forEach(key => {
-              txt += market[key].name + '('+ market[key].ticker +'): ' + market[key].price + ' ' + Config.currencyName + '\n'; 
+              txt += market[key].name + '('+ market[key].ticker +'): ' + market[key].price + ' ' + Config.currencyName + '`\n'; 
             });
-          message.channel.send(txt + '`');
+          message.channel.send(txt);
         
     }
  },
