@@ -10,11 +10,20 @@ module.exports = {
             }
         const author = message.author.id;;
         let ante = Number(args[0]);
-        let winnings = 0;
+        let winnings = -ante;
+        let random = Math.floor(Math.random()*10);
         if(args.length < 1) {
             ante = 1
         }
         if(Casino.validateBet(ante, message) !== true) return;
+        if(random > 5) {
+            winnings = ante;
+            message.channel.send('You won ' + ante + ' ' + Config.currencyName);
+        }
+        else {
+            message.channel.send('You lost ' + ante + ' ' + Config.currencyName);
+        }
+            return Economy.addmoney(message.author.id, winnings);
         }
     },
     scratchoff: {

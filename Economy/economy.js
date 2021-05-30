@@ -77,9 +77,12 @@ async function save() {
     //db.close();
   });
 });
-MongoClient.close();
+await MongoClient.close();
 }
+
 exports.economy = economy;
+
+exports.StockMarket = require('./stocks');
 
 exports.Shop = require('./shop');
 

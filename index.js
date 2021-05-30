@@ -1,3 +1,5 @@
+const { clear } = require('console');
+
 global.fs = require('fs');
 global.uniqid = require('uniqid');
 global.Discord = require('discord.js');
@@ -21,6 +23,7 @@ client.once('ready', async () => {
 		}
 	}*/
 	await Economy.load();
+	await Economy.Stocks.load();
     console.info('la bruhs ready');
 });
 
@@ -64,6 +67,9 @@ client.on('error', console.log);
 
 client.once('disconnect', async () => {
 	clearInterval(saveEconomy);
+	clearInterval(saveStocks);
+	clearInterval(StockMovement);
+	//clearInterval(resetJobs);
 	await Economy.save();
 	console.log('la bruh dc\'d money and shit got saved tho');
 });
@@ -71,11 +77,19 @@ client.once('disconnect', async () => {
 let saveEconomy = setInterval(() => {
 	Economy.save();
 }, 1000*60*20);
-let resetJobs = setInterval(() => {
+let saveStocks = setInterval(() => {
+	Economy.Stocks.save();
+}, 1000*60*60*12);
+let StockMovement = setInterval(() => {
+	Economy.Stocks.Movement();
+}, 1000*60*60
+);
+
+/*let resetJobs = setInterval(() => {
 	Object.keys(Economy.economy).forEach(i => {
 		Economy.economy[i].jobdone = false;
 	});
-}, 1000*60*60*24);
+}, 1000*60*60*24);*/
 process.on('unhandledRejection', function(reason, p){
     console.log("Possibly Unhandled Rejection at: Promise ", p, " reason: ", reason);
     // application specific logging here

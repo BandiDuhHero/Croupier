@@ -12,7 +12,7 @@ module.exports = {
 		authreq: 'Admin',
 		cooldown: 5,
 		execute(message) {
-			Config.reponses = {
+			Config.responses = {
 				wrongChannel: 'u not even in the right room for that what u smokin on :joy:',
 				needPerm: 'You don\'t have permission to use that command', //no sjw shit but check yo privileges la bruh
 				noMention: 'u gotta @ them bro......yo silly ahhh :joy:',
