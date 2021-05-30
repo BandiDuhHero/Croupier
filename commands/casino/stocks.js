@@ -1,4 +1,4 @@
-let market = {};
+let market = Economy.StockMarket.market;
 
 let Stock = Economy.StockMarket.Stock;
 
