@@ -52,6 +52,7 @@ function Movement () {
     market[i].rpc();
   });
 };
+let url = 'mongodb+srv://bandi:getrekt@cluster0.mqcd1.mongodb.net/croupier?retryWrites=true&w=majority';
 async function save() {
   const MongoClient = require('mongodb').MongoClient(url, {
     useUnifiedTopology: true,
