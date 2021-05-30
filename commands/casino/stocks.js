@@ -34,7 +34,7 @@ module.exports = {
       
 
       market[ticker] = new Stock(ticker, name, price);
-      Economy.Stocks.save();
+      Economy.StockMarket.save();
 }
 },
   buystock: {
