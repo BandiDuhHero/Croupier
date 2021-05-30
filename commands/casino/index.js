@@ -35,7 +35,8 @@ const Roulette = require('./roulette');
 const general = require('./general');
 const Dice = require('./dice');
 const Lottery = require('./lottery');
-const commands = Object.assign({}, BlackJack, Roulette, Dice, general, Lottery.commands);
+const stocks = require('./stocks');
+const commands = Object.assign({}, BlackJack, Roulette, Dice, general, Lottery.commands, stocks);
 module.exports = {
 	Lottery: new Lottery.Lottery(),
 	commands: commands,
