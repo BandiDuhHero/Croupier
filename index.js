@@ -23,7 +23,7 @@ client.once('ready', async () => {
 		}
 	}*/
 	await Economy.load();
-	await Economy.Stocks.load();
+	await Economy.StockMarket.load();
     console.info('la bruhs ready');
 });
 
