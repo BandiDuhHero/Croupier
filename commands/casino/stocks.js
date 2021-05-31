@@ -38,6 +38,7 @@ module.exports = {
 },
   buystock: {
     channels: ['stocks'],
+    usage: '[ticker] [amount of shares]',
     aliases: [''],
     execute: async (message, args) => {
         if(Casino.open === false) {
@@ -46,6 +47,9 @@ module.exports = {
       let stock = args[0];
       let shareamt = args[1];
       let inventory = Economy.getInventory(message.author.id);
+      if(!shareamt || isNaN(Number(shareamt))) {
+        message.channel.send('Please list the amount of shares you want to purchase');
+      }
       if(Object.keys(market).indexOf(stock) === -1) {   
         message.channel.send('That company does not exist use .stocks to see the entire market');
       }
