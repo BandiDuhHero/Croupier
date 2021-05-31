@@ -56,7 +56,7 @@ module.exports = {
       if (market[stock].price*shareamt > Economy.getBalance(message.author.id)) {
         channel.send(Config.responses.notEnoughMoney);
       }
-      message.channel.send('You just purchased ' + shareamt + 'shares of ' + stock + 'stock.');
+      message.channel.send('You just purchased ' + shareamt + ' shares of ' + stock + ' stock.');
       Economy.takeMoney(message.author.id, market[stock].price*shareamt);
       if(!inventory[market[stock].name + ' Shares']) {
         return inventory[market[stock].name + ' Shares'] = shareamt;
@@ -81,9 +81,9 @@ sellstock: {
       message.channel.send('You don\'t own that company, use .inventory to see your stocks');
     }
     if (shareamt > inventory[market[stock].name + ' Shares']) {
-      channel.send('You only have ' + inventory[market[stock].name + ' Shares'] + '  shares of ' + market[stock].name);
+      channel.send('You only have ' + inventory[market[stock].name + ' Shares'] + ' shares of ' + market[stock].name);
     }
-    message.channel.send('You just sold ' + shareamt + 'shares of ' + stock + 'stock.');
+    message.channel.send('You just sold ' + shareamt + ' shares of ' + stock + ' stock.');
     Economy.giveMoney(message.author.id, market[stock].price*shareamt);
     inventory[market[stock].name + ' Shares'] -= shareamt;
 }
