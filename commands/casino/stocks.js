@@ -91,9 +91,9 @@ sellstock: {
             if(Casino.open === false) {
                 return message.channel.send(Config.responses.casinoClosed);
             }
-          let txt = '`';
+          let txt = '';
           Object.keys(market).forEach(key => {
-              txt += market[key].name + '('+ market[key].ticker +'): ' + market[key].price + ' ' + Config.currencyName + '`\n'; 
+              txt += '`' + market[key].name + '('+ market[key].ticker +'): ' + market[key].price + ' ' + Config.currencyName + '`\n'; 
             });
           message.channel.send(txt);
         
