@@ -89,11 +89,11 @@ module.exports = {
             if (Object.keys(inventory).length < 1) {
                 return message.channel.send(`${target.tag} has no items in their inventory`);
             }
-            let msg = '`' + target.username + '\'s Inventory\n' + '-------------------------------------\n\n';
+            let msg = '`' + target.username + '\'s Inventory\n' + '-------------------------------------`\n\n';
             Object.keys(inventory).forEach(i => {
-                msg += i + '- ' + inventory[i] + '\n';
+                msg += i + '- ' + inventory[i] + '`\n';
             });
-            return message.channel.send(msg += '`');
+            return message.channel.send(msg);
         },
     },
     transfer: {
@@ -110,7 +110,7 @@ module.exports = {
             await Economy.giveMoney(message.author.id, -transferAmount);
             await Economy.giveMoney(transferTarget.id, transferAmount);
 
-            return message.channel.send(`Successfully transferred ${transferAmount}${Config.currencyName} to ${transferTarget.tag}. Your current balance is ${Economy.getBalance(message.author.id)}${Config.currencyName}`);
+            return message.channel.send(`Successfully transferred ${transferAmount} ${Config.currencyName} to ${transferTarget.tag}. Your current balance is ${Economy.getBalance(message.author.id)} ${Config.currencyName}`);
         }
     },
 
