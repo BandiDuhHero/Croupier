@@ -91,7 +91,7 @@ module.exports = {
             }
             let msg = '`' + target.username + '\'s Inventory\n' + '-------------------------------------`\n\n';
             Object.keys(inventory).forEach(i => {
-                msg += i + '- ' + inventory[i] + '`\n';
+                msg += '`' + i + '- ' + inventory[i] + '`\n';
             });
             return message.channel.send(msg);
         },
