@@ -48,13 +48,13 @@ module.exports = {
       let shareamt = args[1];
       let inventory = Economy.getInventory(message.author.id);
       if(!shareamt || isNaN(Number(shareamt))) {
-        message.channel.send('Please list the amount of shares you want to purchase');
+       return message.channel.send('Please list the amount of shares you want to purchase');
       }
       if(Object.keys(market).indexOf(stock) === -1) {   
-        message.channel.send('That company does not exist use .stocks to see the entire market');
+        return message.channel.send('That company does not exist use .stocks to see the entire market');
       }
       if (market[stock].price*shareamt > Economy.getBalance(message.author.id)) {
-        channel.send(Config.responses.notEnoughMoney);
+        return message.channel.send(Config.responses.notEnoughMoney);
       }
       message.channel.send('You just purchased ' + shareamt + ' shares of ' + stock + ' stock.');
       Economy.takeMoney(message.author.id, market[stock].price*shareamt);
@@ -75,13 +75,13 @@ sellstock: {
     let shareamt = args[1];
     let inventory = Economy.getInventory(message.author.id);
     if(Object.keys(market).indexOf(stock) === -1) {   
-      message.channel.send('That company does not exist use .stocks to see the entire market');
+     return message.channel.send('That company does not exist use .stocks to see the entire market');
     }
     if(!inventory[market[stock].name + ' Shares']) {   
-      message.channel.send('You don\'t own that company, use .inventory to see your stocks');
+      return message.channel.send('You don\'t own that company, use .inventory to see your stocks');
     }
     if (shareamt > inventory[market[stock].name + ' Shares']) {
-      channel.send('You only have ' + inventory[market[stock].name + ' Shares'] + ' shares of ' + market[stock].name);
+     return channel.send('You only have ' + inventory[market[stock].name + ' Shares'] + ' shares of ' + market[stock].name);
     }
     message.channel.send('You just sold ' + shareamt + ' shares of ' + stock + ' stock.');
     Economy.giveMoney(message.author.id, market[stock].price*shareamt);
