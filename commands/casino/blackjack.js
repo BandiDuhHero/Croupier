@@ -280,8 +280,8 @@ module.exports = {
         }
         if(Casino.validateBet(ante, message) !== true) return; 
             message.channel.game = new Blackjack(message.channel);
-            message.channel.join(player, ante);
-            message.channel.game.start(message.author);
+            message.channel.join(message.author, ante);
+            message.channel.game.start();
         },
     },
     hit: {
