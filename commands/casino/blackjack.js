@@ -225,10 +225,10 @@ class Blackjack {
 	}
 }
 module.exports = {
-    blackjack: {
+    groupblackjack: {
         authreq: 'Operator',
         channels: ['blackjack'],
-        aliases: ['bj'],
+        aliases: ['groupbj', 'gbj'],
         cooldown: 5,
         execute: (message, args) => {
             if(Casino.open === false) {
@@ -255,6 +255,33 @@ module.exports = {
                 message.channel.game.start();
                }
             }, 60000);
+        },
+    },
+    blackjack: {
+        channels: ['blackjack'],
+        aliases: ['bj'],
+        cooldown: 5,
+        execute: (message, args) => {
+            if(Casino.open === false) {
+                return message.channel.send(Config.responses.casinoClosed);
+            }
+            let bj = message.channel.game;
+            const ante = Number(args);
+            if(bj) {
+                if (bj.status === 1) {
+                return message.channel.send(Config.responses.gameNotStarted);
+            }
+                if (bj.status === 2) {
+                return message.channel.send('theres already a game in progress wait for it to finish lil nicc');
+            }
+            if(bj.autostart === true) {
+                return message.channel.send(Config.responses.autoStart);
+            }
+        }
+        if(Casino.validateBet(ante, message) !== true) return; 
+            message.channel.game = new Blackjack(message.channel);
+            message.channel.join(player, ante);
+            message.channel.game.start(message.author);
         },
     },
     hit: {

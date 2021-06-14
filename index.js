@@ -1,5 +1,6 @@
 const { clear } = require('console');
-
+global.provable = require('provable');
+global.Random = require('random-js');
 global.fs = require('fs');
 global.uniqid = require('uniqid');
 global.Discord = require('discord.js');

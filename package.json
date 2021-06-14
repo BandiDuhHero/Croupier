@@ -16,6 +16,8 @@
     "fs": "0.0.1-security",
     "mongodb": "^3.6.6",
     "mongoose": "^5.12.7",
+    "provable": "^0.2.3",
+    "random-js": "^2.1.0",
     "sequelize": "^5.22.4",
     "sqlite": "^3.0.6",
     "sqlite3": "^4.2.0",
