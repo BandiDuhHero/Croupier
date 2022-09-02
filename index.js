@@ -29,7 +29,7 @@ client.once('ready', async () => {
 });
 
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
 	if (message.author.bot) return;
 	//if(message.content === '!join')	client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
 	if(!Economy.economy[message.author.id]) {
