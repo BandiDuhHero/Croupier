@@ -1,2 +1,2 @@
 # Croupier
-slatt!
+Discord bot written in NodeJS using DiscordJS API
